@@ -1,0 +1,26 @@
+name: "Set GitHub Authentication"
+description: "Sets global Git authentication for GitHub API calls"
+inputs:
+   app_id:
+     required: true
+     description: "The GitHub App identifier"
+   app_private_key:
+     required: true
+     description: "The GitHub App .PEM used to generate tokens"
+   app_owner_org_name:
+     required: true
+     description: "The name of the GitHub organization where the GitHub App is installed. This is also the organization where requests will be sent to such as access to reusable modules."
+runs:
+  using: "composite"
+  steps:
+    - name: Generate authentication token
+      id: app-token
+      uses: actions/create-github-app-token@v1
+      with:
+        app-id: ${{ inputs.app_id }}
+        private-key: ${{ inputs.app_private_key }}
+        owner: ${{ inputs.app_owner_org_name }}
+    - name: Set Git configuration
+      shell: bash
+      run: |
+        git config --global url."https://oauth2:${{ steps.app-token.outputs.token }}@github.com".insteadOf https://github.com
