@@ -98,12 +98,12 @@ variable "hub_connection" {
         }
         public_ip = {
           pip1 = {
-            name = "ohmr-pip-wus2-002" 
+            name              = "ohmr-pip-wus2-002"
             allocation_method = "Static"
             sku               = "Standard"
           }
           pip2 = {
-            name = "ohmr-pip-wus2-003" 
+            name              = "ohmr-pip-wus2-003"
             allocation_method = "Static"
             sku               = "Standard"
           }
@@ -156,12 +156,12 @@ variable "hub_connection" {
         }
         public_ip = {
           pip1 = {
-            name = "ohmr-pip-wus3-003" 
+            name              = "ohmr-pip-wus3-003"
             allocation_method = "Static"
             sku               = "Standard"
           }
           pip2 = {
-            name = "ohmr-pip-wus3-004" 
+            name              = "ohmr-pip-wus3-004"
             allocation_method = "Static"
             sku               = "Standard"
           }

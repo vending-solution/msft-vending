@@ -156,12 +156,12 @@ hub_connection = {
       }
       public_ip = {
         pip1 = {
-          name = "omni-pip-wus3-003"
+          name              = "omni-pip-wus3-003"
           allocation_method = "Static"
           sku               = "Standard"
         }
         pip2 = {
-          name = "omni-pip-wus3-004" 
+          name              = "omni-pip-wus3-004"
           allocation_method = "Static"
           sku               = "Standard"
         }
