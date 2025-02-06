@@ -27,7 +27,7 @@ hub_connection = {
               nsg_key          = "nsg-fw_ew_trust-test-wus2-001"
               rt_key           = "rt-fw_ew_trust-test-wus2-001"
             }
-          
+
 
           }
         }
@@ -54,12 +54,12 @@ hub_connection = {
       }
       public_ip = {
         pip1 = {
-          name = "omni-pip-wus2-002" 
+          name              = "omni-pip-wus2-002"
           allocation_method = "Static"
           sku               = "Standard"
         }
         pip2 = {
-          name = "omni-pip-wus2-003" 
+          name              = "omni-pip-wus2-003"
           allocation_method = "Static"
           sku               = "Standard"
         }
@@ -94,7 +94,7 @@ hub_connection = {
               nsg_key          = "nsg-fw_ew_trust-test-wus3-001"
               rt_key           = "rt-fw_ew_trust-test-wus3-001"
             }
-          
+
 
           }
         }
@@ -113,12 +113,12 @@ hub_connection = {
       }
       public_ip = {
         pip1 = {
-          name = "omni-pip-wus3-003" 
+          name              = "omni-pip-wus3-003"
           allocation_method = "Static"
           sku               = "Standard"
         }
         pip2 = {
-          name = "omni-pip-wus3-004" 
+          name              = "omni-pip-wus3-004"
           allocation_method = "Static"
           sku               = "Standard"
         }
