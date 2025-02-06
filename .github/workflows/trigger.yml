@@ -31,4 +31,4 @@ jobs:
       backend_azure_rm_container_name: 'poctfstate'
       backend_azure_rm_key: 'lratfdev.tfstate'
       plan_file_name: 'terraform.tfplan'
-      var_file: '../environments/landing-zones.tfvars'
+      var_file: '../../environments/landing-zones.tfvars'
