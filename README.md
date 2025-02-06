@@ -62,3 +62,7 @@ Configure authentication to download terraform modules stored in GHE private rep
       ref: workflows # ${{ inputs.version }} #<branch or tag name containing your released code>
 2. create optfiles folder: workflow-fullstac-working-001\optfiles
 3. create json file for environment in optfiles: workflow-fullstac-working-001\optfiles\**sbx**.json (in this example, the environment is sbx)
+
+
+TBD
+- doc requirements such as details to TF backend state

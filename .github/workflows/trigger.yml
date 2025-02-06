@@ -1,0 +1,34 @@
+# .github/workflows/trigger.yml
+name: Trigger Terraform Orchestration
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  actions: read
+  # Write access for security-events is only required for customers looking for MSDO results to appear in the codeQL security alerts tab on GitHub (Requires GHAS)
+  security-events: write
+
+
+jobs:
+  terraform:
+    name: Terraform CI/CD Orchestration
+    #uses: vending-solution/reusable-workflows/.github/workflows/tf_orchestration.yml@main
+    uses: ./.github/workflows/tf_orchestration.yml
+    secrets: inherit
+    with:
+      tf_version: 'latest'
+      working_directory: 'terraform/vnet-deployment'
+      environment: 'dev'
+      gh_environment: 'sbx'
+      backend_azure_rm_resource_group_name: 'rg-lra-tf-dev-eus1'
+      backend_azure_rm_storage_account_name: 'stalratfdeveus1'
+      backend_azure_rm_container_name: 'poctfstate'
+      backend_azure_rm_key: 'lratfdev.tfstate'
+      plan_file_name: 'terraform.tfplan'
+      var_file: '../../environments/landing-zones.tfvars'
