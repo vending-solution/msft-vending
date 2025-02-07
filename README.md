@@ -35,7 +35,7 @@ This repository includes an approach to deploy Azure Vending Solution using reus
 
 ## Setup Overview
 
-<img src="docs/img/github-solution-setup.png" width="70%">
+<img src="docs/img/github-solution-setup.png" width="80%">
 
 ## Setup
 
@@ -111,7 +111,7 @@ https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation
 
 If using an Azure Entra ID Application, set the name of the application and leave other settings as default.
 
-<img src="docs/img/az-app-reg-01.png" width="50%">
+<img src="docs/img/az-app-reg-01.png" width="60%">
 
 ### Setup GitHub Application
 
