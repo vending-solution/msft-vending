@@ -1,4 +1,4 @@
-# Vending Solution DevOps Workflows
+# Vending Solution
 
 This repository includes an approach to deploy Azure Vending Solution using reusable GitHub Action workflows and Terraform modules hosted in a different GitHub organization.
 
