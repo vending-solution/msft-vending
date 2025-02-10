@@ -93,7 +93,7 @@ jobs:
         working-directory: ${{ github.workspace }}
       - name: Push branch to GitHub
         run: |
-            git push -u origin features/subscription/${{ env.request_id }}
+            git push --force -u origin features/subscription/${{ env.request_id }}
         shell: bash
         working-directory: ${{ github.workspace }}
       # Create branch feature/request/{global_id}
