@@ -33,7 +33,6 @@ runs:
   steps:
     - name: Create new Branch and Commit
       run: |
-        git remote -v
         git checkout -b ${{ inputs.branch_name }}
         git config --global user.name "${{ inputs.commit_user_name }}"
         git config --global user.email "${{ inputs.commit_user_email }}"
@@ -45,7 +44,6 @@ runs:
         GITHUB_TOKEN: ${{ inputs.github_token }}
     - name: Push branch to GitHub
       run: |
-        git remote -v
         git remote set-url origin https://${{ inputs.github_token }}@github.com/vending-solution/msft-vending.git
         git push --force -u ${{ inputs.branch_name }}
       shell: bash
