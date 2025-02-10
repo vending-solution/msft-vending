@@ -54,8 +54,8 @@ jobs:
             $jsonRequest = $jsonRequestInput | ConvertFrom-Json
             $requestId = $jsonRequest.global_id
 
-            echo "request_id=$requestId" >> "$GITHUB_OUTPUT"
-            echo "request_id=$requestId" >> $GITHUB_ENV
+            echo "request_id=$requestId" >> $env:GITHUB_OUTPUT
+            echo "request_id=$requestId" >> $env:GITHUB_ENV
 
             # Save request to file
             $requestDirectory = "$requestsDirectory/$requestId"
@@ -82,7 +82,8 @@ jobs:
       - name: Create new Branch and Commit
         run: |
             echo "Env Var: ${{ env.request_id }}"
-            echo "Step Output: ${{ steps.vars.outputs.request_id }}"
+            echo "Env Var: $request_id"
+            echo "Step Output: ${{ steps.validate_request.outputs.request_id }}"
             git checkout -b features/subscription/${{ env.request_id }} main
             git config --global user.name "lapellaniz"
             git add .
