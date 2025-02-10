@@ -60,7 +60,7 @@ runs:
           const existingRequest = await github.rest.pulls.list({
             owner,
             repo,
-            base: '${{ inputs.branch_name }}'
+            head: '${{ inputs.branch_name }}'
           });
           console.log(existingRequest.data.length);
           console.log(existingRequest);
