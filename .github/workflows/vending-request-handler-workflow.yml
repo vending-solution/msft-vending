@@ -17,10 +17,11 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-      - run: |
+      - name: Validate and Save Request
+        run: |
             $ErrorActionPreference = "Stop"
-            $jsonRequest = '${{ inputs.request_json }}'
-            # Define the path of the folder
+            # Set variables
+            $jsonRequestInput = '${{ inputs.request_json }}'            
             $sourceDirectory = "${{ github.workspace }}"
             $workloadsDirectory = "$sourceDirectory/workloads"
             $requestsDirectory = "$workloadsDirectory/requests"
@@ -34,10 +35,12 @@ jobs:
 
             # Validate request JSON against schema
             $requestSchema = Get-Content "$sourceDirectory/schemas/vending-request-schema.json" -Raw
-            $jsonRequest | Test-Json -Schema $requestSchema
+            $jsonRequestInput | Test-Json -Schema $requestSchema
+            $jsonRequest = $jsonRequestInput | ConvertFrom-Json
+            $requestId = $jsonRequest.global_id
 
             # Save request to file
-            $requestDirectory = "$requestsDirectory/ABC1234"
+            $requestDirectory = "$requestsDirectory/$requestId"
             $requestFile = "$requestDirectory/request.json"
 
             # Create request directory if not found
@@ -54,7 +57,7 @@ jobs:
             }
 
             # Save new request JSON file
-            New-Item $requestFile -ItemType File -Value $jsonRequest
+            New-Item $requestFile -ItemType File -Value $jsonRequestInput
 
         shell: pwsh
         working-directory: ${{ github.workspace }}
