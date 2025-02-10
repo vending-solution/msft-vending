@@ -83,7 +83,7 @@ jobs:
         working-directory: ${{ github.workspace }}
         continue-on-error: false
       - name: Create Pull Request
-        uses: ./.github/actions/set-github-authentication
+        uses: ./.github/actions/create-pull-request
         with:
           branch_name: 'features/subscription/${{ env.request_id }}'
           base_branch: 'main'
