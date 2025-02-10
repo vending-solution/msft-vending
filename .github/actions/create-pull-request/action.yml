@@ -63,7 +63,7 @@ runs:
             base: '${{ inputs.base_branch }}'
           });
           console.log(existingRequest.data.length);
-          console.log(existingRequest.data);          
+          console.log(existingRequest);
           if (existingRequest.data.length > 0) {
             console.log('Pull request already exists');
             return;
