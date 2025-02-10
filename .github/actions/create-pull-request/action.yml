@@ -64,7 +64,9 @@ runs:
             state: 'open'
           });
           console.log(existingRequest.data.length);
-          console.log(existingRequest);
+          console.log(existingRequest);          
+          console.log(existingRequest.data[0]);
+          console.log(existingRequest.data[1]);
           if (existingRequest.data.length > 0) {
             console.log('Pull request already exists');
             return;
