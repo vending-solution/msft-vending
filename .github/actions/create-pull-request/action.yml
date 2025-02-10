@@ -23,8 +23,9 @@ inputs:
     required: true
     description: "The title of the pull request"
   working_directory:
-    required: true
+    required: false
     description: "The working directory to run the commands in"
+    default: "${{ github.workspace }}"
   github_token:
     description: 'A Github PAT'
     required: true
