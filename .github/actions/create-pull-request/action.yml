@@ -57,6 +57,16 @@ runs:
       with:
         script: |
           const { repo, owner } = context.repo;
+          const result2 = await github.rest.pulls.list({
+            owner,
+            repo,
+            head: '${{ inputs.branch_name }}',
+            base: '${{ inputs.base_branch }}'
+          });
+          if (result2.data.length > 0) {
+            console.log('Pull request already exists');
+            return;
+          }
           const result = await github.rest.pulls.create({
             title: '${{ inputs.pull_request_title }}',
             owner,
