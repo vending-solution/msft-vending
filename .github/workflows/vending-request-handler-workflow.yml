@@ -6,6 +6,7 @@ on:
     inputs:
       request_json:
         required: true
+        description: 'The vending JSON request to be processed.'
         type: string
         default: '{"vending_support_team":"GIDUSR01","request_id":"auto-generated","global_id":"GID01","user_name":"GIDUSR01","contact_email_address":"requestor.owner@domain.com","aad_groups":{"owner":"xxxxx-xxxxx-xxxxx-xxxxx","reader":"zzzzz-zzzzz-zzzzz-zzzzz"},"tags":{"Application":"GID01","BusinessStream":"GID01","CostCenter":"123456"},"default_resource_groups":2,"subscriptions":[]}'
 
@@ -19,9 +20,20 @@ jobs:
         uses: actions/checkout@v4
       - name: Validate and Save Request
         run: |
+            <#
+            .SYNOPSIS
+            This PowerShell script is used to validate the vending solution JSON request against a schema and save the request to a file.
+
+            .DESCRIPTION
+            Requirements
+            1. Validate the JSON request against a schema.
+            2. Save the JSON request to a file to /workloads/requests/{global_id}/request.json.
+            3. Delete the existing JSON request if it exists.            
+            #>
+
             $ErrorActionPreference = "Stop"
             # Set variables
-            $jsonRequestInput = '${{ inputs.request_json }}'            
+            $jsonRequestInput = '${{ inputs.request_json }}'
             $sourceDirectory = "${{ github.workspace }}"
             $workloadsDirectory = "$sourceDirectory/workloads"
             $requestsDirectory = "$workloadsDirectory/requests"
@@ -58,14 +70,12 @@ jobs:
 
             # Save new request JSON file
             New-Item $requestFile -ItemType File -Value $jsonRequestInput
-
         shell: pwsh
         working-directory: ${{ github.workspace }}
         continue-on-error: false
-      # Validate JSON input
+      
       # Create branch feature/request/{global_id}
       # Save JSON to new branch
       # publish
       # create PR
-      # end
       
