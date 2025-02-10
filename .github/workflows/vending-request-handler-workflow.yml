@@ -1,0 +1,33 @@
+# .github/workflows/vending-request-handler-workflow.yml
+name: Vending Request Handler Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      gh_environment:
+        required: true
+        type: string
+      request_json:
+        required: true
+        type: string
+        default: '{"vending_support_team":"GIDUSR01","request_id":"auto-generated","global_id":"GID01","user_name":"GIDUSR01","contact_email_address":"requestor.owner@domain.com","aad_groups":{"owner":"xxxxx-xxxxx-xxxxx-xxxxx","reader":"zzzzz-zzzzz-zzzzz-zzzzz"},"tags":{"Application":"GID01","BusinessStream":"GID01","CostCenter":"123456"},"default_resource_groups":2,"subscriptions":[]}'
+
+jobs:
+  request_handler:
+    name: Request Handler
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.gh_environment }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - run: |
+            Write-Host "${{ inputs.request_json }}"
+        shell: pwsh
+        working-directory: ${{ github.workspace }}/workload
+      # Validate JSON input
+      # Create branch feature/request/{global_id}
+      # Save JSON to new branch
+      # publish
+      # create PR
+      # end
+      
