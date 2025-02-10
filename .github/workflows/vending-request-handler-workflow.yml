@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
       - run: |
             $ErrorActionPreference = "Stop"
-            $jsonRequest = "${{ inputs.request_json }}"
+            $jsonRequest = '${{ inputs.request_json }}'
             # Define the path of the folder
             $workloadDirectory = "${{ github.workspace }}/workload"
 
