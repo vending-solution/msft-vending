@@ -21,27 +21,40 @@ jobs:
             $ErrorActionPreference = "Stop"
             $jsonRequest = '${{ inputs.request_json }}'
             # Define the path of the folder
-            $workloadDirectory = "${{ github.workspace }}/workload"
+            $sourceDirectory = "${{ github.workspace }}"
+            $workloadsDirectory = "$sourceDirectory/workloads"
+            $requestsDirectory = "$workloadsDirectory/requests"
 
-            # Check if the folder exists
-            if (-Not (Test-Path -Path $workloadDirectory)) {
+            # Create requests directory if not found
+            if (-Not (Test-Path -Path $requestsDirectory)) {
                 # Create the folder if it does not exist
-                New-Item -ItemType Directory -Path $workloadDirectory
-                Write-Output "Folder created at $workloadDirectory"
+                New-Item -ItemType Directory -Path $requestsDirectory
+                Write-Output "Folder created at $requestsDirectory"
             }
 
-            # TODO : Validate JSON input
+            # Validate request JSON against schema
+            $requestSchema = Get-Content "$sourceDirectory/schemas/vending-request-schema.json" -Raw
+            $jsonRequest | Test-Json -Schema $requestSchema
 
-            $requestDirectory = "$workloadDirectory/ABC1234"
+            # Save request to file
+            $requestDirectory = "$requestsDirectory/ABC1234"
             $requestFile = "$requestDirectory/request.json"
+
+            # Create request directory if not found
+            if (-Not (Test-Path -Path $requestDirectory)) {
+                # Create the folder if it does not exist
+                New-Item -ItemType Directory -Path $requestDirectory
+                Write-Output "Folder created at $requestDirectory"
+            }
             
+            # Should this delete the builds/subscriptions directories?
             # Delete existing JSON request
             if (Test-Path $requestFile) {
-                Remove-Item $requestFile -verbose
+                Remove-Item $requestFile -Force
             }
 
             # Save new request JSON file
-            New-Item $requestFile -ItemType File -Value '$jsonRequest'
+            New-Item $requestFile -ItemType File -Value $jsonRequest
 
         shell: pwsh
         working-directory: ${{ github.workspace }}
