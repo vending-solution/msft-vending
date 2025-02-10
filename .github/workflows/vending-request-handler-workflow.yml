@@ -41,7 +41,7 @@ jobs:
             }
 
             # Save new request JSON file
-            New-Item $requestFile -ItemType File -Value $jsonRequest
+            New-Item $requestFile -ItemType File -Value '$jsonRequest'
 
         shell: pwsh
         working-directory: ${{ github.workspace }}
