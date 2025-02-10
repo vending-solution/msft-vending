@@ -87,6 +87,11 @@ jobs:
             git commit -m "Add request for ${{ env.request_id }}"
         shell: bash
         working-directory: ${{ github.workspace }}
+      - name: Push branch to GitHub
+        run: |
+            git push -u origin features/subscription/${{ env.request_id }}
+        shell: bash
+        working-directory: ${{ github.workspace }}
       # Create branch feature/request/{global_id}
       # Save JSON to new branch
       # publish
