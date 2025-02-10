@@ -42,14 +42,15 @@ runs:
       working-directory: ${{ inputs.working_directory }}
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
-    # - name: Push branch to GitHub
-    #   run: |
-    #     git remote set-url origin https://${{ inputs.github_token }}@github.com/vending-solution/msft-vending.git
-    #     git push --force -u ${{ inputs.branch_name }}
-    #   shell: bash
-    #   working-directory:  ${{ inputs.working_directory }}
-    #   env:
-    #     GITHUB_TOKEN: ${{ inputs.github_token }}
+    - name: Push branch to GitHub
+      run: |
+        # git remote set-url origin https://${{ inputs.github_token }}@github.com/vending-solution/msft-vending.git
+        git config --global url."https://oauth2:${{ inputs.github_token }}@github.com".insteadOf https://github.com
+        git push --force -u ${{ inputs.branch_name }}
+      shell: bash
+      working-directory:  ${{ inputs.working_directory }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
     - name: Create Pull Request
       uses: actions/github-script@v7
       env:
