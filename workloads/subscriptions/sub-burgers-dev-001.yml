@@ -1,6 +1,6 @@
 ---
-name: sub1
-subscription_id: ee5d2fa3- # sub 1
+name: sub-burgers-dev-001
+subscription_id: 764741ea-c # sub 2
 workload: Production
 location: westus3
 billing_enrollment_account: 123456
@@ -13,7 +13,7 @@ virtual_networks:
       - "10.0.0.0/24"
     resource_group_name: my-rg-vnet1
     resource_group_lock_enabled: false
-    
+
   vnet2:
     name: my-vnet1
     address_space:
