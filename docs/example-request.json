@@ -1,0 +1,83 @@
+{
+    "vending_support_team": "Nick, Matt, Brett",
+    "request_id": "auto-generated",
+    "global_id": "cesar",
+    "user_name": "cesar",
+    "contact_email_address": "requestor.owner@domain.com",
+    "aad_groups": {
+        "owner": "xxxxx-xxxxx-xxxxx-xxxxx",
+        "reader": "zzzzz-zzzzz-zzzzz-zzzzz"
+    },
+    "tags": {
+        "Application": "cesar",
+        "BusinessStream": "cesar",
+        "CostCenter": "123456"
+    },
+    "default_resource_groups": 2,
+    "subscriptions": [
+        {
+            "sbx": true,
+            "network_peering": false,
+            "network_IP_space": "0.0.0.0/00",
+            "notes": "Determined by the user requesting this subscription, not peered",
+            "budgets": {
+                "budget": {
+                    "budget_amount": 8000,
+                    "budget_occurrence": "monthly",
+                    "budget_threshold": 800,
+                    "budget_notification_emails": [
+                        "requestor.owner@domain.com"
+                    ]
+                }
+            }
+        },
+        {
+            "dev": true,
+            "network_peering": false,
+            "network_IP_space": "0.0.0.0/00",
+            "notes": "IP space are requested from the network team",
+            "budgets": {
+                "budget": {
+                    "budget_amount": 8000,
+                    "budget_occurrence": "monthly",
+                    "budget_threshold": 800,
+                    "budget_notification_emails": [
+                        "requestor.owner@domain.com"
+                    ]
+                }
+            }
+        },
+        {
+            "stg": true,
+            "network_peering": false,
+            "network_IP_space": "0.0.0.0/00",
+            "notes": "IP space are requested from the network team",
+            "budgets": {
+                "budget": {
+                    "budget_amount": 8000,
+                    "budget_occurrence": "monthly",
+                    "budget_threshold": 800,
+                    "budget_notification_emails": [
+                        "requestor.owner@domain.com"
+                    ]
+                }
+            }
+        },
+        {
+            "prd": true,
+            "network_peering": false,
+            "network_IP_space": "0.0.0.0/00",
+            "notes": "IP space are requested from the network team",
+            "budgets": {
+                "budget": {
+                    "budget_amount": 8000,
+                    "budget_occurrence": "monthly",
+                    "budget_threshold": 800,
+                    "budget_notification_emails": [
+                        "requestor.owner@domain.com"
+                    ]
+                }
+            }
+        }
+    ]
+}

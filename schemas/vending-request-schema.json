@@ -1,0 +1,145 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "http://vending-solution.com/vending-request-schema.json",
+    "description": "",
+    "type": "object",
+    "properties": {
+      "vending_support_team": {
+        "type": "string",
+        "minLength": 1
+      },
+      "request_id": {
+        "type": "string",
+        "minLength": 1
+      },
+      "global_id": {
+        "type": "string",
+        "minLength": 1
+      },
+      "user_name": {
+        "type": "string",
+        "minLength": 1
+      },
+      "contact_email_address": {
+        "type": "string",
+        "minLength": 1
+      },
+      "aad_groups": {
+        "type": "object",
+        "properties": {
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reader": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "owner",
+          "reader"
+        ]
+      },
+      "tags": {
+        "type": "object",
+        "properties": {
+          "Application": {
+            "type": "string",
+            "minLength": 1
+          },
+          "BusinessStream": {
+            "type": "string",
+            "minLength": 1
+          },
+          "CostCenter": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "Application",
+          "BusinessStream",
+          "CostCenter"
+        ]
+      },
+      "default_resource_groups": {
+        "type": "number"
+      },
+      "subscriptions": {
+        "type": "array",
+        "uniqueItems": true,
+        "minItems": 0,
+        "items": {
+          "required": [            
+            "network_peering",
+            "network_IP_space",
+            "notes"
+          ],
+          "properties": {
+            "sbx": {
+              "type": "boolean"
+            },
+            "network_peering": {
+              "type": "boolean"
+            },
+            "network_IP_space": {
+              "type": "string",
+              "minLength": 1
+            },
+            "notes": {
+              "type": "string",
+              "minLength": 1
+            },
+            "budgets": {
+              "type": "object",
+              "properties": {
+                "budget": {
+                  "type": "object",
+                  "properties": {
+                    "budget_amount": {
+                      "type": "number"
+                    },
+                    "budget_occurrence": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "budget_threshold": {
+                      "type": "number"
+                    },
+                    "budget_notification_emails": {
+                      "type": "array",
+                      "items": {
+                        "required": [],
+                        "properties": {}
+                      }
+                    }
+                  },
+                  "required": [
+                    "budget_amount",
+                    "budget_occurrence",
+                    "budget_threshold",
+                    "budget_notification_emails"
+                  ]
+                }
+              },
+              "required": [
+                "budget"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "required": [
+      "vending_support_team",
+      "request_id",
+      "global_id",
+      "user_name",
+      "contact_email_address",
+      "aad_groups",
+      "tags",
+      "default_resource_groups",
+      "subscriptions"
+    ]
+  }
