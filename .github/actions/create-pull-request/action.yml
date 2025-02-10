@@ -46,7 +46,7 @@ runs:
     - name: Push branch to GitHub
       run: |
         git remote -v
-        git remote set-url origin https://github.com/vending-solution/msft-vending.git
+        git remote set-url origin https://${{ inputs.github_token }}@github.com/vending-solution/msft-vending.git
         git push --force -u ${{ inputs.branch_name }}
       shell: bash
       working-directory:  ${{ inputs.working_directory }}
