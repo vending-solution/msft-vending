@@ -57,13 +57,17 @@ runs:
       with:
         script: |
           const { repo, owner } = context.repo;
-          const result2 = await github.rest.pulls.list({
+          const existingRequest = await github.rest.pulls.list({
             owner,
             repo,
             head: '${{ inputs.branch_name }}',
             base: '${{ inputs.base_branch }}'
           });
-          if (result2.data.length > 0) {
+          console.log(existingRequest.data.length);
+          console.log(existingRequest);
+          console.log(existingRequest.data);
+          console.log(existingRequest.data[0]);          
+          if (existingRequest.data.length > 0) {
             console.log('Pull request already exists');
             return;
           }
