@@ -15,10 +15,13 @@ jobs:
     name: Request Handler
     runs-on: ubuntu-latest
     #environment: ${{ inputs.gh_environment }}
+    outputs:
+      request_id: ${{ steps.validate_request.outputs.request_id }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
       - name: Validate and Save Request
+        id: validate_request
         run: |
             <#
             .SYNOPSIS
@@ -51,6 +54,9 @@ jobs:
             $jsonRequest = $jsonRequestInput | ConvertFrom-Json
             $requestId = $jsonRequest.global_id
 
+            echo "request_id=$requestId" >> "$GITHUB_OUTPUT"
+            echo "request_id=$requestId" >> $GITHUB_ENV
+
             # Save request to file
             $requestDirectory = "$requestsDirectory/$requestId"
             $requestFile = "$requestDirectory/request.json"
@@ -73,7 +79,16 @@ jobs:
         shell: pwsh
         working-directory: ${{ github.workspace }}
         continue-on-error: false
-      
+      - name: Create new Branch and Commit
+        run: |
+            echo "Env Var: ${{ env.request_id }}"
+            echo "Step Output: ${{ steps.vars.outputs.request_id }}"
+            git checkout -b features/subscription/${{ env.request_id }} main
+            git config --global user.name "lapellaniz"
+            git add .
+            git commit -m "Add request for ${{ env.request_id }}"
+        shell: bash
+        working-directory: ${{ github.workspace }}
       # Create branch feature/request/{global_id}
       # Save JSON to new branch
       # publish
