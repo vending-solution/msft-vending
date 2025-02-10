@@ -18,9 +18,34 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
       - run: |
-            Write-Host "${{ inputs.request_json }}"
+            $ErrorActionPreference = "Stop"
+            $jsonRequest = "${{ inputs.request_json }}"
+            # Define the path of the folder
+            $workloadDirectory = "${{ github.workspace }}/workload"
+
+            # Check if the folder exists
+            if (-Not (Test-Path -Path $workloadDirectory)) {
+                # Create the folder if it does not exist
+                New-Item -ItemType Directory -Path $workloadDirectory
+                Write-Output "Folder created at $workloadDirectory"
+            }
+
+            # TODO : Validate JSON input
+
+            $requestDirectory = "$workloadDirectory/ABC1234"
+            $requestFile = "$requestDirectory/request.json"
+            
+            # Delete existing JSON request
+            if (Test-Path $requestFile) {
+                Remove-Item $requestFile -verbose
+            }
+
+            # Save new request JSON file
+            New-Item $requestFile -ItemType File -Value $jsonRequest
+
         shell: pwsh
-        working-directory: ${{ github.workspace }}/workload
+        working-directory: ${{ github.workspace }}
+        continue-on-error: false
       # Validate JSON input
       # Create branch feature/request/{global_id}
       # Save JSON to new branch
