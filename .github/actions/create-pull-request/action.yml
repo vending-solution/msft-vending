@@ -48,10 +48,10 @@ runs:
         script: |
           const { repo, owner } = context.repo;
           const result = await github.rest.pulls.create({
-            title: '${{ inputs.branch_name }}',
+            title: '${{ inputs.pull_request_title }}',
             owner,
             repo,
             head: '${{ inputs.branch_name }}',
-            base: '${{ inputs.branch_name }}',
-            body: '${{ inputs.branch_name }}'
+            base: '${{ inputs.base_branch }}',
+            body: '${{ inputs.pull_request_body }}'
           });
