@@ -57,20 +57,19 @@ runs:
       with:
         script: |
           const { repo, owner } = context.repo;
+          // Get list of pull requests for head. use {owner}:{branch} filter.
           const existingRequest = await github.rest.pulls.list({
             owner,
             repo,
-            head: 'vending-solution:${{ inputs.branch_name }}',
+            head: `${owner}:${{ inputs.branch_name }}`,
             state: 'open'
           });
-          console.log(existingRequest.data.length);
-          console.log(existingRequest);          
-          console.log(existingRequest.data[0]);
-          console.log(existingRequest.data[1]);
+          // If a pull request already exists, do nothing
           if (existingRequest.data.length > 0) {
             console.log('Pull request already exists');
             return;
           }
+          // Create pull request
           const result = await github.rest.pulls.create({
             title: '${{ inputs.pull_request_title }}',
             owner,
@@ -79,3 +78,4 @@ runs:
             base: '${{ inputs.base_branch }}',
             body: '${{ inputs.pull_request_body }}'
           });
+          console.log('Pull request created');
