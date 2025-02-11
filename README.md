@@ -31,7 +31,7 @@ This repository includes an approach to deploy Azure Vending Solution using reus
 1. Azure Entra ID Application - Used for Azure authentication from GitHub Actions
 1. GitHub Actions - Run workflows to deploy vending solution
 1. Terraform - Reusable modules to deploy Azure infrastructure
-1. Azure Vending Solution
+1. Azure Vending Solution **(the framework should work for other solutions having the need to source the centrally stored terraform modules)**
 
 ## Setup Overview
 
@@ -81,7 +81,7 @@ flowchart TD
 1. In GitHub select-health organization:
    - Setup the vending solution repository.
    - Create the GitHub repository environments.
-   - Add repository level variables & secrets.
+   - Add ~~repository~~ organization level **(IH or SH)** variables & secrets. **(note: the goal is to allow any repot to consume the terraform modules without the need for the enduser to do anything.)**
    - Add GitHub Application secrets at the organization level.
    - Verify vending solution workflow.
 
