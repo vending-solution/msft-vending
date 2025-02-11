@@ -78,4 +78,5 @@ runs:
             base: '${{ inputs.base_branch }}',
             body: '${{ inputs.pull_request_body }}'
           });
+          console.log(result);
           console.log('Pull request created');
