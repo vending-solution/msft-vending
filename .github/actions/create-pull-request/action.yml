@@ -83,5 +83,5 @@ runs:
             base: '${{ inputs.base_branch }}',
             body: '${{ inputs.pull_request_body }}'
           });
-          console.log(`Pull request created - ${result.url}`);
-          return result.number;
+          console.log(`Pull request created - ${result.data.url}`);
+          return result.data.number;
