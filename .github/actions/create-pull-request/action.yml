@@ -71,8 +71,10 @@ runs:
           });
           // If a pull request already exists, do nothing
           if (existingRequest.data.length > 0) {
-            console.log('Pull request already exists');
-            return;
+            const pr = existingRequest.data[0];
+            console.log(`Pull request already exists - ${pr.url}`);
+            console.log(`Pull request number - ${pr.number}`);
+            return pr.number;
           }
           // Create pull request
           const result = await github.rest.pulls.create({
