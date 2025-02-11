@@ -1,0 +1,151 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "request_id": {
+        "type": "string"
+      },
+      "global_id": {
+        "type": "string"
+      },
+      "project_name": {
+        "type": "string"
+      },
+      "organization": {
+        "type": "string"
+      },
+      "workload": {
+        "type": "string"
+      },
+      "billing_enrollment_account": {
+        "type": "string"
+      },
+      "management_group_id": {
+        "type": "string"
+      },
+      "network_watcher_resource_group_enabled": {
+        "type": "boolean"
+      },
+      "subscriptions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "environment": {
+              "type": "string"
+            },
+            "subscription_id": {
+              "type": "string"
+            },
+            "subscription_display_name": {
+              "type": "string"
+            },
+            "subscription_alias_name": {
+              "type": "string"
+            },
+            "address_space": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "peering": {
+              "type": "boolean"
+            },
+            "budget": {
+              "type": "object",
+              "properties": {
+                "budget_amount": {
+                  "type": "number"
+                },
+                "budget_occurrence": {
+                  "type": "string"
+                },
+                "budget_threshold": {
+                  "type": "number"
+                },
+                "budget_notification_emails": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": ["budget_amount", "budget_occurrence", "budget_threshold", "budget_notification_emails"]
+            }
+          },
+          "required": ["environment", "subscription_id", "address_space", "location", "peering", "budget"]
+        }
+      },
+      "default_resource_groups": {
+        "type": "number"
+      },
+      "request_custom_resource_groups": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "tags": {
+        "type": "object",
+        "properties": {
+          "Application": {
+            "type": "string"
+          },
+          "BusinessStream": {
+            "type": "string"
+          },
+          "CostCenter": {
+            "type": "string"
+          },
+          "Customer": {
+            "type": "string"
+          },
+          "UserGroup": {
+            "type": "string"
+          }
+        },
+        "required": ["Application", "BusinessStream", "CostCenter", "Customer", "UserGroup"]
+      },
+      "contact_email_address": {
+        "type": "string"
+      },
+      "alternative_email_addresses": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "aad_groups": {
+        "type": "object",
+        "properties": {
+          "contributor": {
+            "type": "string"
+          },
+          "PIM": {
+            "type": "string"
+          },
+          "reader": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "required": [
+      "request_id",
+      "global_id",
+      "project_name",
+      "organization",
+      "workload",
+      "billing_enrollment_account",
+      "management_group_id",
+      "network_watcher_resource_group_enabled",
+      "subscriptions",
+      "default_resource_groups",
+      "request_custom_resource_groups",
+      "tags",
+      "contact_email_address",
+      "alternative_email_addresses",
+      "aad_groups"
+    ]
+  }
