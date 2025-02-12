@@ -32,6 +32,10 @@ on:
       var_file:
         required: false
         type: string
+      artifact_affix:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   plan:
@@ -99,5 +103,5 @@ jobs:
       - name: Upload Terraform plan
         uses: actions/upload-artifact@v4
         with:
-          name: terraform-plan
+          name: terraform-plan${{ inputs.artifact_affix == '' && format('') || format('-%s', inputs.artifact_affix) }}
           path: ${{ inputs.working_directory }}/${{ inputs.plan_file_name }}

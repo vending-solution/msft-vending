@@ -61,6 +61,7 @@ jobs:
       backend_azure_rm_key: 'lratfdev.tfstate'
       plan_file_name: 'terraform.tfplan'
       var_file: '../../environments/landing-zones.tfvars'
+      artifact_affix: "sub"
   # TODO : Output the new sub id from the module
   terraform-build:
     name: Terraform Subscription Orchestration ${{ needs.set-request.outputs.request_id }}
@@ -79,5 +80,6 @@ jobs:
       backend_azure_rm_container_name: 'poctfstate'
       backend_azure_rm_key: 'lratfdev.tfstate'
       plan_file_name: 'terraform.tfplan'
-      var_file: '../../environments/landing-zones.tfvars'  
+      var_file: '../../environments/landing-zones.tfvars'
+      artifact_affix: "build"
       
