@@ -2,17 +2,40 @@
 name: Vending Request Processor Workflow
 
 on:
-  workflow_call:
-    inputs:
-      gh_environment:
-        required: true
-        type: string
+  push:
+    branches:
+      - main
+    paths:
+      - 'workloads/requests/**'
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+    paths:
+      - 'workloads/requests/**'
+  workflow_dispatch:  
 
 jobs:
-  processor:
-    name: Run Vending Request Processor
+  processor-yml:
+    name: Generate Vending YAML Files
     runs-on: ubuntu-latest
-    environment: ${{ inputs.gh_environment }}
+    environment: sbx
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Details
+        run: |
+          echo "Start creating YAML files..."
+          echo "Github.ref: $GITHUB_REF"
+          echo "Github.event_name: $GITHUB_EVENT_NAME"
+          echo "Github.event_path: $GITHUB_EVENT_PATH"
+          echo "Github.event: $GITHUB_EVENT"
+          echo "Github.ref: ${{github.ref}}"
+          echo "Github.event_name: ${{github.event_name}}"
+          echo "Github.event_path: ${{github.event_path}}"
+          echo "Github.event: ${{github.env}}"
+          echo "Github.base_ref: ${{github.base_ref}}"
+          echo "Github.head_ref: ${{github.head_ref}}"
+          echo "Github.ref_name: ${{github.ref_name}}"
+          echo "Github.action_ref: ${{github.action_ref}}"
+
+      
