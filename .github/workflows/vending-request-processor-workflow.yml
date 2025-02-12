@@ -38,9 +38,11 @@ jobs:
           echo "Github.ref_name: ${{github.ref_name}}"
           echo "Github.action_ref: ${{github.action_ref}}"
           echo "Github.head_commit.message: ${{github.event.head_commit.message}}"
-          echo "Github.head_commit: ${{github.event.head_commit}}"
-          echo "Github.event: ${{github.event}}"
-          echo "Github: ${{github}}"
+          echo "Github.event.base_ref: ${{github.event.base_ref}}"
+          $commitMessage="${{github.event.head_commit.message}}"
+          $requestId = commitMessage.split("/")[-1]
+          echo "Request ID: $requestId"
+        shell: pwsh
   processor-yml-merged:
     name: Generate Vending YAML Files if PR is Merged
     if: github.event.pull_request.merged == true
@@ -48,6 +50,7 @@ jobs:
     environment: sbx
     steps:
       - name: Details
+        shell: pwsh
         run: |
           echo "Start creating YAML files..."
           echo "Github.ref: $GITHUB_REF"
@@ -57,11 +60,13 @@ jobs:
           echo "Github.ref: ${{github.ref}}"
           echo "Github.event_name: ${{github.event_name}}"
           echo "Github.event_path: ${{github.event_path}}"
-          echo "Github.event: ${{github.env}}"
           echo "Github.base_ref: ${{github.base_ref}}"
           echo "Github.head_ref: ${{github.head_ref}}"
+          echo "Github.event.pull_request.head.ref: "${{github.event.pull_request.head.ref}}"
+          echo "Github.event.pull_request.base.label: "${{github.event.pull_request.base.label}}"
           echo "Github.ref_name: ${{github.ref_name}}"
           echo "Github.action_ref: ${{github.action_ref}}"          
-          echo "Github.head_commit.message: ${{github.event.head_commit.message}}"
-          echo "Github.head_commit: ${{github.event.head_commit}}"
-          echo "Github.event: ${{github.event}}"
+          echo "Github.head_commit.message: ${{github.event.head_commit.message}}"          
+          $prBranch = "${{github.head_ref}}"
+          $requestId = prBranch.split("/")[-1]
+          echo "Request ID: $requestId"
