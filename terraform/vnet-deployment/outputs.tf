@@ -67,8 +67,6 @@ output "vnet_object" {
     ] : "${kv.name}" => kv
   }
 }
-
-
-output "subscription_id"{
+output "subscription_id" {
   value = data.azurerm_subscription.current.subscription_id
 }
