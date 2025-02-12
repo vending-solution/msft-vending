@@ -2,11 +2,6 @@
 name: Vending Request Processor Workflow
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'workloads/requests/**'
   pull_request:
     types:
       - closed
@@ -14,59 +9,43 @@ on:
       - main
     paths:
       - 'workloads/requests/**'
-  workflow_dispatch:  
+  workflow_dispatch:
+    inputs:
+      request_id:
+        required: true
+        description: 'The vending request ID to be processed.'
 
 jobs:
   processor-yml:
     name: Generate Vending YAML Files
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     environment: sbx
+    outputs:
+      request_id: ${{ steps.parse-id.outputs.request_id }}
     steps:
-      - name: Details
-        run: |
-          echo "Start creating YAML files..."
-          echo "Github.ref: $GITHUB_REF"
-          echo "Github.event_name: $GITHUB_EVENT_NAME"
-          echo "Github.event_path: $GITHUB_EVENT_PATH"
-          echo "Github.event: $GITHUB_EVENT"
-          echo "Github.ref: ${{github.ref}}"
-          echo "Github.event_name: ${{github.event_name}}"
-          echo "Github.event_path: ${{github.event_path}}"
-          echo "Github.event: ${{github.env}}"
-          echo "Github.base_ref: ${{github.base_ref}}"
-          echo "Github.head_ref: ${{github.head_ref}}"
-          echo "Github.ref_name: ${{github.ref_name}}"
-          echo "Github.action_ref: ${{github.action_ref}}"
-          echo "Github.head_commit.message: ${{github.event.head_commit.message}}"
-          echo "Github.event.base_ref: ${{github.event.base_ref}}"
-          $commitMessage="${{github.event.head_commit.message}}"
-          $requestId = $commitMessage.split("/")[-1]
-          echo "Request ID: $requestId"
-        shell: pwsh
-  processor-yml-merged:
-    name: Generate Vending YAML Files if PR is Merged
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    environment: sbx
-    steps:
-      - name: Details
+      - name: Set Request ID
+        id: parse-id
         shell: pwsh
         run: |
-          echo "Start creating YAML files..."
-          echo "Github.ref: $GITHUB_REF"
-          echo "Github.event_name: $GITHUB_EVENT_NAME"
-          echo "Github.event_path: $GITHUB_EVENT_PATH"
-          echo "Github.event: $GITHUB_EVENT"
-          echo "Github.ref: ${{github.ref}}"
-          echo "Github.event_name: ${{github.event_name}}"
-          echo "Github.event_path: ${{github.event_path}}"
-          echo "Github.base_ref: ${{github.base_ref}}"
-          echo "Github.head_ref: ${{github.head_ref}}"
-          echo "Github.event.pull_request.head.ref: "${{github.event.pull_request.head.ref}}"
-          echo "Github.event.pull_request.base.label: "${{github.event.pull_request.base.label}}"
-          echo "Github.ref_name: ${{github.ref_name}}"
-          echo "Github.action_ref: ${{github.action_ref}}"          
-          echo "Github.head_commit.message: ${{github.event.head_commit.message}}"          
-          $prBranch = "${{github.head_ref}}"
-          $requestId = $prBranch.split("/")[-1]
+          $requestPath = $env:REQUEST_PATH
+          $requestId = $requestPath.split("/")[-1]
           echo "Request ID: $requestId"
+          echo "request_id=$requestId" >> $env:GITHUB_OUTPUT
+          echo "request_id=$requestId" >> $env:GITHUB_ENV
+        env:
+          REQUEST_PATH: ${{ github.head_ref || inputs.request_id }}
+      - name: Generate YAML Files
+        shell: pwsh
+        run: |
+          $requestId = "${{ steps.parse-id.outputs.request_id }}"
+          echo "Generating YAML for request $requestId..."
+          echo "Generating YAML for request $env:request_id..."
+      - name: Upload Vending Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: vending-request
+          path: |
+            workloads/requests/$requestId/*.json
+            workloads/subscriptions/$requestId/*.yml
+            workloads/builds/$requestId/*.yml
