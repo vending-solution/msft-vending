@@ -56,4 +56,22 @@ jobs:
       plan_file_name: 'terraform.tfplan'
       var_file: '../../environments/landing-zones.tfvars'
   # TODO : Output the new sub id from the module
+  terraform-build:
+    name: Terraform Subscription Orchestration ${{ needs.set-request.outputs.request_id }}
+    if: needs.set-request.outputs.request_id != ''
+    #uses: vending-solution/reusable-workflows/.github/workflows/tf_orchestration.yml@main
+    uses: ./.github/workflows/tf_orchestration.yml
+    needs: [set-request, terraform-sub]
+    secrets: inherit
+    with:
+      tf_version: 'latest'
+      working_directory: 'terraform/vnet-deployment'
+      environment: 'dev'
+      gh_environment: 'sbx'
+      backend_azure_rm_resource_group_name: 'rg-lra-tf-dev-eus1'
+      backend_azure_rm_storage_account_name: 'stalratfdeveus1'
+      backend_azure_rm_container_name: 'poctfstate'
+      backend_azure_rm_key: 'lratfdev.tfstate'
+      plan_file_name: 'terraform.tfplan'
+      var_file: '../../environments/landing-zones.tfvars'  
       
