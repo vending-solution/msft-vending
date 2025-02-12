@@ -64,7 +64,7 @@ jobs:
       artifact_affix: "sub"
   # TODO : Output the new sub id from the module
   terraform-build:
-    name: Terraform Subscription Orchestration ${{ needs.set-request.outputs.request_id }}
+    name: Terraform Build Orchestration ${{ needs.set-request.outputs.request_id }}
     if: needs.set-request.outputs.request_id != ''
     #uses: vending-solution/reusable-workflows/.github/workflows/tf_orchestration.yml@main
     uses: ./.github/workflows/tf_orchestration.yml
