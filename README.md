@@ -81,9 +81,20 @@ flowchart TD
 1. In GitHub select-health organization:
    - Setup the vending solution repository.
    - Create the GitHub repository environments.
-   - Add ~~repository~~ organization level **(IH or SH)** variables & secrets. **(note: the goal is to allow any repot to consume the terraform modules without the need for the enduser to do anything.)**
+   - Add organization level variables & secrets and limit to required repositories.
    - Add GitHub Application secrets at the organization level.
    - Verify vending solution workflow.
+
+### GitHub Required Security
+
+1. GitHub Application
+1. Cross enterprise reusable workflows
+   - Allow all actions and reusable workflows   
+1. Organization level secrets
+1. Repository environment level secrets
+1. Vending workflow permissions
+   - Read and write permissions
+   - Allow GitHub Actions to create pull requests - must be enabled at the organization level first.
 
 ### Setup Azure Entra ID Federated Authentication
 
@@ -172,7 +183,7 @@ Use a [GitHub Application](https://docs.github.com/en/apps/creating-github-apps/
    | TF_OWNER_ORG_NAME  	| The name of the GitHub organization that has the application installed and where the reusable workflows and modules will be consumed from. <br>This is the scope of the authentication request. 	|
    | TF_APP_ID          	| The GitHub application identifier.                                                                                                                                                              	|
 
-1. Setup GitHub repository secrets and variables
+1. Setup GitHub repository environment secrets and variables
 
    | Secret                	| Value                                                                                                                  	|
    |-----------------------	|------------------------------------------------------------------------------------------------------------------------	|
