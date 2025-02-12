@@ -45,7 +45,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: vending-request-${{ env.REQUEST_ID }}
+          if-no-files-found: error
           path: |
-            workloads/requests/${{ env.REQUEST_ID }}/*.json
-            workloads/subscriptions/${{ env.REQUEST_ID }}/*.yml
-            workloads/builds/${{ env.REQUEST_ID }}/*.yml
+            ${{ github.workspace }}/workloads/requests/${{ env.REQUEST_ID }}/*.json
+            ${{ github.workspace }}/workloads/subscriptions/${{ env.REQUEST_ID }}/*.yml
+            ${{ github.workspace }}/workloads/builds/${{ env.REQUEST_ID }}/*.yml
