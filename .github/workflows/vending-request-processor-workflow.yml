@@ -66,6 +66,7 @@ jobs:
   terraform-build:
     name: Terraform Build Orchestration ${{ needs.set-request.outputs.request_id }} - ${{ needs.terraform-sub.outputs.subscription_id }}
     if: needs.set-request.outputs.request_id != ''
+    #&& needs.terraform-sub.outputs.subscription_id != ''
     #uses: vending-solution/reusable-workflows/.github/workflows/tf_orchestration.yml@main
     uses: ./.github/workflows/tf_orchestration.yml
     needs: [set-request, terraform-sub]
