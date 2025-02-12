@@ -38,6 +38,8 @@ jobs:
     name: Apply Terraform 
     runs-on: ubuntu-latest
     environment: ${{ inputs.gh_environment }}
+    outputs:
+      subscription_id: ${{ steps.output_subscription_id.outputs.subscription_id }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -85,4 +87,10 @@ jobs:
 
       - name: Apply Terraform Plan
         run: terraform apply -input=false -auto-approve ${{ inputs.plan_file_name }}
-        working-directory: ${{ inputs.working_directory }}        
+        working-directory: ${{ inputs.working_directory }}
+
+        # TODO : either make this optional or output all potential outputs as JSON. let the caller decide what to do with it.
+      - name: Output Terraform Properties
+        id: output_subscription_id
+        run: terraform output subscription_id # -json
+        working-directory: ${{ inputs.working_directory }}
