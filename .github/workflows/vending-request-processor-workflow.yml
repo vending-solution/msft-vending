@@ -14,14 +14,13 @@ on:
       request_id:
         required: true
         default: 'wBurgers'
-        description: 'The vending request ID to be processed.'
+        description: 'The vending request ID to be processed.'    
 
 jobs:
-  processor-yml:
-    name: Generate Vending YAML Files
+  set-request:
+    name: Set Request ID
     if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    environment: sbx
     outputs:
       request_id: ${{ steps.parse-id.outputs.request_id }}
     steps:
@@ -37,18 +36,24 @@ jobs:
           echo "request_id=$requestId" >> $env:GITHUB_OUTPUT
           echo "REQUEST_ID=$requestId" >> $env:GITHUB_ENV
         env:
-          REQUEST_PATH: ${{ github.head_ref || inputs.request_id }}
-      - name: Generate YAML Files
-        shell: pwsh
-        run: |
-          $requestId = $env:REQUEST_ID
-          echo "Generating YAML for request $requestId..."
-      - name: Upload Vending Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: vending-request-${{ env.REQUEST_ID }}
-          if-no-files-found: error
-          path: |
-            ${{ github.workspace }}/workloads/requests/${{ env.REQUEST_ID }}/*.json
-            ${{ github.workspace }}/workloads/subscriptions/${{ env.REQUEST_ID }}/*.yml
-            ${{ github.workspace }}/workloads/builds/${{ env.REQUEST_ID }}/*.yml
+          REQUEST_PATH: ${{ github.head_ref || inputs.request_id }}  
+  terraform-sub:
+    name: Terraform Subscription Orchestration ${{ needs.set-request.outputs.request_id }}
+    if: needs.set-request.outputs.request_id != ''
+    #uses: vending-solution/reusable-workflows/.github/workflows/tf_orchestration.yml@main
+    uses: ./.github/workflows/tf_orchestration.yml
+    needs: set-request
+    secrets: inherit
+    with:
+      tf_version: 'latest'
+      working_directory: 'terraform/vnet-deployment'
+      environment: 'dev'
+      gh_environment: 'sbx'
+      backend_azure_rm_resource_group_name: 'rg-lra-tf-dev-eus1'
+      backend_azure_rm_storage_account_name: 'stalratfdeveus1'
+      backend_azure_rm_container_name: 'poctfstate'
+      backend_azure_rm_key: 'lratfdev.tfstate'
+      plan_file_name: 'terraform.tfplan'
+      var_file: '../../environments/landing-zones.tfvars'
+  # TODO : Output the new sub id from the module
+      
