@@ -13,6 +13,7 @@ on:
     inputs:
       request_id:
         required: true
+        default: 'wBurgers'
         description: 'The vending request ID to be processed.'
 
 jobs:
@@ -32,20 +33,19 @@ jobs:
           $requestId = $requestPath.split("/")[-1]
           echo "Request ID: $requestId"
           echo "request_id=$requestId" >> $env:GITHUB_OUTPUT
-          echo "request_id=$requestId" >> $env:GITHUB_ENV
+          echo "REQUEST_ID=$requestId" >> $env:GITHUB_ENV
         env:
           REQUEST_PATH: ${{ github.head_ref || inputs.request_id }}
       - name: Generate YAML Files
         shell: pwsh
         run: |
-          $requestId = "${{ steps.parse-id.outputs.request_id }}"
+          $requestId = $env:REQUEST_ID
           echo "Generating YAML for request $requestId..."
-          echo "Generating YAML for request $env:request_id..."
       - name: Upload Vending Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: vending-request
+          name: vending-request-${{ env.REQUEST_ID }}
           path: |
-            workloads/requests/$requestId/*.json
-            workloads/subscriptions/$requestId/*.yml
-            workloads/builds/$requestId/*.yml
+            workloads/requests/${{ env.REQUEST_ID }}/*.json
+            workloads/subscriptions/${{ env.REQUEST_ID }}/*.yml
+            workloads/builds/${{ env.REQUEST_ID }}/*.yml
