@@ -25,6 +25,8 @@ jobs:
     outputs:
       request_id: ${{ steps.parse-id.outputs.request_id }}
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
       - name: Set Request ID
         id: parse-id
         shell: pwsh
@@ -47,4 +49,6 @@ jobs:
           name: vending-request-${{ env.REQUEST_ID }}
           if-no-files-found: error
           path: |
-            ${{ github.workspace }}/workloads/requests/${{ env.REQUEST_ID }}/request.json
+            ${{ github.workspace }}/workloads/requests/${{ env.REQUEST_ID }}/*.json
+            ${{ github.workspace }}/workloads/subscriptions/${{ env.REQUEST_ID }}/*.yml
+            ${{ github.workspace }}/workloads/builds/${{ env.REQUEST_ID }}/*.yml
