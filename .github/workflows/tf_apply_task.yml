@@ -36,6 +36,10 @@ on:
         required: false
         type: string
         default: ''
+    outputs:
+      subscription_id:
+        description: 'Subscription ID'
+        value: ${{ jobs.apply.outputs.subscription_id }}
 
 jobs:
   apply:
