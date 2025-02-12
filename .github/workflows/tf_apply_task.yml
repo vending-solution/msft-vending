@@ -32,6 +32,10 @@ on:
       var_file:
         required: false
         type: string
+      artifact_affix:
+        required: false
+        type: string
+        default: ''
 
 jobs:
   apply:
@@ -82,7 +86,7 @@ jobs:
       - name: Download Terraform plan
         uses: actions/download-artifact@v4
         with:
-          name: terraform-plan
+          name: terraform-plan${{ inputs.artifact_affix == '' && '' || format('-{0}', inputs.artifact_affix) }}
           path: ${{ inputs.working_directory }}
 
       - name: Apply Terraform Plan
