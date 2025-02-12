@@ -46,6 +46,6 @@ jobs:
         with:
           name: vending-request-${{ env.REQUEST_ID }}
           path: |
-            workloads/requests/${{ env.REQUEST_ID }}/*.json
-            workloads/subscriptions/${{ env.REQUEST_ID }}/*.yml
-            workloads/builds/${{ env.REQUEST_ID }}/*.yml
+            /workloads/requests/${{ env.REQUEST_ID }}/*.json
+            /workloads/subscriptions/${{ env.REQUEST_ID }}/*.yml
+            /workloads/builds/${{ env.REQUEST_ID }}/*.yml
