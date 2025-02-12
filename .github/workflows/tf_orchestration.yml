@@ -88,6 +88,7 @@ jobs:
     secrets: inherit
     with:
       gh_environment: ${{ inputs.gh_environment }}
+      artifact_affix: ${{ inputs.artifact_affix }}
 
 
   apply:
