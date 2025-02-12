@@ -103,5 +103,5 @@ jobs:
       - name: Upload Terraform plan
         uses: actions/upload-artifact@v4
         with:
-          name: terraform-plan${{ inputs.artifact_affix == '' && format('') || format('-%s', inputs.artifact_affix) }}
+          name: terraform-plan${{ inputs.artifact_affix == '' && '' || format('-{0}', inputs.artifact_affix) }}
           path: ${{ inputs.working_directory }}/${{ inputs.plan_file_name }}
