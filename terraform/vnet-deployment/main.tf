@@ -1,7 +1,7 @@
 
 
 # This is required for resource modules
-data azurerm_subscription "current" { }
+data "azurerm_subscription" "current" {}
 
 resource "azurerm_resource_group" "this" {
   for_each = { for kk, kv in local.resource_groups : kk => kv
