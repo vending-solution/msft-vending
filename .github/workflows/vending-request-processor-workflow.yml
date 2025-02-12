@@ -16,6 +16,12 @@ on:
         default: 'wBurgers'
         description: 'The vending request ID to be processed.'    
 
+permissions:
+  contents: read
+  id-token: write
+  actions: read  
+  security-events: write
+
 jobs:
   set-request:
     name: Set Request ID
