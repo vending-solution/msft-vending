@@ -86,8 +86,7 @@ jobs:
       - name: Generate YAML Files
         shell: pwsh
         run: |
-          $requestId = $env:REQUEST_ID
-          echo "Generating YAML for request $requestId..."
+          ${{github.workspace}}/scripts/Invoke-ProcessJsonRequest.ps1 -GlobalId "${{ env.REQUEST_ID }}" -WorkloadsDirectory "${{github.workspace}}/workloads" -HubNetworkResourceId "/test" -DnsServers "10.0.0.1", "10.0.0.2"
       - name: Generate Vending Solution Terraform variable file
         shell: pwsh
         run: |
