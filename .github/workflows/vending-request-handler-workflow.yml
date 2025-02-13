@@ -88,6 +88,29 @@ jobs:
         run: |
           $requestId = $env:REQUEST_ID
           echo "Generating YAML for request $requestId..."
+      - name: Generate Vending Solution Terraform variable file
+        shell: pwsh
+        run: |
+          $sourceDirectory = "${{ github.workspace }}"
+          $workloadsDirectory = "$sourceDirectory/workloads"
+          $buildsDirectory = "$workloadsDirectory/builds/${{ env.REQUEST_ID }}"
+          $subDirectory = "$workloadsDirectory/subscriptions/${{ env.REQUEST_ID }}"
+
+          # Create directory if not found
+          if (-Not (Test-Path -Path $buildsDirectory)) {
+              # Create the folder if it does not exist
+              New-Item -ItemType Directory -Path $buildsDirectory
+              Write-Output "Folder created at $buildsDirectory"
+          }
+          if (-Not (Test-Path -Path $subDirectory)) {
+              # Create the folder if it does not exist
+              New-Item -ItemType Directory -Path $subDirectory
+              Write-Output "Folder created at $subDirectory"
+          }
+          
+          # Save tfvars
+          New-Item "$buildsDirectory/input.tfvars" -ItemType File -Value "global_id = \"workloads/builds/${{ env.REQUEST_ID }}\""
+          New-Item "$subDirectory/input.tfvars" -ItemType File -Value "global_id = \"workloads/subscriptions/${{ env.REQUEST_ID }}\""
       - name: Create Pull Request
         id: create-pull-request
         uses: ./.github/actions/create-pull-request
