@@ -1,0 +1,1 @@
+global_id = "workloads/builds/GID01"
