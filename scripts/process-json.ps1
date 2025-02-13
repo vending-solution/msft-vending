@@ -40,6 +40,7 @@ foreach ($subscription in $json.subscriptions) {
     $fileName = "sub-$($json.organization)-$($json.global_id)-$($subscription.environment)-001"
     $location = $subscription.location -replace 'westus2','wus2' -replace 'centralus','cus'
     $subHashTable = [ordered]@{
+        # leave blank when creating a new subscription
         subscription_id = $($subscription.subscription_id)
         name= "sub-$($json.organization)-$($json.global_id)-$($subscription.environment)-001"
         # subscription_display_name = $($subscription.subscription_display_name)
@@ -62,6 +63,7 @@ foreach ($subscription in $json.subscriptions) {
                 peering = $subscription.peering
                 dns_servers = @("10.0.0.1","10.0.0.2")
                 hub_peering_enabled= 'false' # Static values
+                ## declare as parameter
                 hub_network_resource_id = "/subscriptions/d200e3b2-/resourceGroups/cesart10-connectivity-eastus/providers/Microsoft.Network/virtualNetworks/cesart10-hub-eastus"
                 hub_peering_use_remote_gateways = 'false' # Static values
                 resource_group_name= "rg-$($json.global_id)-$($location)-$($subscription.environment)-001"

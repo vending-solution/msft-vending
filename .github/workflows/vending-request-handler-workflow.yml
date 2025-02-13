@@ -109,8 +109,8 @@ jobs:
           }
           
           # Save tfvars
-          New-Item "$buildsDirectory/input.tfvars" -ItemType File -Value 'global_id = "workloads/builds/${{ env.REQUEST_ID }}"'
-          New-Item "$subDirectory/input.tfvars" -ItemType File -Value 'global_id = "workloads/subscriptions/${{ env.REQUEST_ID }}"'
+          New-Item "$buildsDirectory/inputs.tfvars" -ItemType File -Value 'global_id = "workloads/builds/${{ env.REQUEST_ID }}"'
+          New-Item "$subDirectory/inputs.tfvars" -ItemType File -Value 'global_id = "workloads/subscriptions/${{ env.REQUEST_ID }}"'
       - name: Create Pull Request
         id: create-pull-request
         uses: ./.github/actions/create-pull-request

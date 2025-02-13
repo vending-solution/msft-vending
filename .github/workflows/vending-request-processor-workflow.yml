@@ -59,8 +59,10 @@ jobs:
       backend_azure_rm_storage_account_name: 'stalratfdeveus1'
       backend_azure_rm_container_name: 'poctfstate'
       backend_azure_rm_key: 'lratfdev.tfstate'
+      #backend_azure_rm_key: '${{ needs.set-request.outputs.request_id }}.tfstate'
       plan_file_name: 'terraform.tfplan'
       var_file: '../../environments/landing-zones.tfvars'
+      #var_file: '../../workloads/subscriptions/${{ needs.set-request.outputs.request_id }}/inputs.tfvars'
       artifact_affix: "sub"
   # TODO : Output the new sub id from the module
   terraform-build:
@@ -80,7 +82,9 @@ jobs:
       backend_azure_rm_storage_account_name: 'stalratfdeveus1'
       backend_azure_rm_container_name: 'poctfstate'
       backend_azure_rm_key: 'lratfdev.tfstate'
+      #backend_azure_rm_key: '${{ needs.set-request.outputs.request_id }}.tfstate'
       plan_file_name: 'terraform.tfplan'
       var_file: '../../environments/landing-zones.tfvars'
+      #var_file: '../../workloads/builds/${{ needs.set-request.outputs.request_id }}/inputs.tfvars'
       artifact_affix: "build"
       

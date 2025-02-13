@@ -1,0 +1,1 @@
+global_id = "workloads/subscriptions/wTacos/inputs.tfvars"
