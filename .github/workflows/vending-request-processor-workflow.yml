@@ -39,7 +39,7 @@ jobs:
           echo "Github.action_ref: ${{github.action_ref}}"
           echo "Github.head_commit.message: ${{github.event.head_commit.message}}"
           echo "Github.event.base_ref: ${{github.event.base_ref}}"
-          echo "Github.event.before: ${{github.event.before}}"          
+          echo "Github.event.before: ${{github.event.before}}"
           $commitMessage="${{github.event.head_commit.message}}"
           $requestId = $commitMessage.split("/")[-1]
           echo "Request ID: $requestId"
@@ -66,7 +66,9 @@ jobs:
           echo "Github.event.pull_request.head.ref: "${{github.event.pull_request.head.ref}}"
           echo "Github.event.pull_request.base.label: "${{github.event.pull_request.base.label}}"
           echo "Github.ref_name: ${{github.ref_name}}"
-          echo "Github.action_ref: ${{github.action_ref}}"          
+          echo "Github.action_ref: ${{github.action_ref}}"
+          echo "Github.event.base_ref: ${{github.event.base_ref}}"
+          echo "Github.event.before: ${{github.event.before}}"
           echo "Github.head_commit.message: ${{github.event.head_commit.message}}"          
           $prBranch = "${{github.head_ref}}"
           $requestId = $prBranch.split("/")[-1]
