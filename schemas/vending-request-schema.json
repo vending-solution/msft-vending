@@ -73,7 +73,7 @@
                 }
               }
             },
-            "required": ["budget_amount", "budget_occurrence", "budget_threshold", "budget_notification_emails"]
+            "required": []
           }
         },
         "required": ["environment", "subscription_id", "address_space", "location", "peering"]
