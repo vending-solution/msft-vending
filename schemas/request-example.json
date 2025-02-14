@@ -1,10 +1,11 @@
 {
   "request_id": "auto-generated",
-  "global_id": "blink6",
-  "project_name": "my project blink6",
+  "global_id": "tacos",
+  "project_name": "my project tacos",
   "organization": "ih",
   "workload": "Production",
   "billing_enrollment_account": "123456",
+  "subscription_management_group_association_enabled": false,
   "management_group_id": "msft-testing",
   "network_watcher_resource_group_enabled" : false,
   "subscriptions": [
@@ -77,15 +78,15 @@
   ],
   "default_resource_groups": 2,
   "request_custom_resource_groups": [
-    "azr-blink6-rg-01",
-    "azr-blink6-rg-02"
+    "azr-tacos-rg-01",
+    "azr-tacos-rg-02"
   ],
   "tags": {
-    "Application": "blink6",
-    "BusinessStream": "blink6",
+    "Application": "tacos",
+    "BusinessStream": "tacos",
     "CostCenter": "123456",
-    "Customer": "blink6",
-    "UserGroup": "blink6"
+    "Customer": "tacos",
+    "UserGroup": "tacos"
   },
   "contact_email_address": "requestor.owner@domain.com",
   "alternative_email_addresses": [
