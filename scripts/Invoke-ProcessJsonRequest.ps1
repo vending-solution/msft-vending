@@ -43,6 +43,14 @@ param (
     [Parameter(Mandatory)] [ValidateNotNullOrEmpty()] [string[]]$DnsServers = @("10.0.0.1", "10.0.0.2")
 )
 
+$locationMap = @{
+    westus2   = 'wus2'
+    westus    = 'wus'
+    centralus = 'cus'
+    eastus    = 'eus'
+    eastus2   = 'eus2'
+}
+
 # Break on any error
 $ErrorActionPreference = "Stop"
 
@@ -180,7 +188,12 @@ function New-BuildYamlFile() {
         [hashtable]$Subscription
     )
     Write-Host "Creating build YAML file for $($Subscription.environment)..."
-    $location = $Subscription.location -replace 'westus2', 'wus2' -replace 'centralus', 'cus'
+
+    # Use location abbreviation
+    $location = $locationMap[$Subscription.location]
+
+    # locationMap
+
     $data = Get-BuildData -Location $location -Request $Request -Subscription $Subscription
     $content = ConvertTo-Yaml -data $data -UseFlowStyle
     $content -replace '"', '' | Out-File -FilePath "$WorkloadsDirectory/builds/$GlobalId/$($data.name).yml" -Force
