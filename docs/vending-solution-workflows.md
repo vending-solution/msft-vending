@@ -64,7 +64,7 @@ Currently this workflow is manually triggered and allows someone to specify the 
 
 | Name                      	| Description                                                                            	| Example                                                                                                                    	|
 |---------------------------	|----------------------------------------------------------------------------------------	|----------------------------------------------------------------------------------------------------------------------------	|
-| `HUB_NETWORK_RESOURCE_ID` 	| The Azure Virtual Hub resource ID to attach Azure virtual networks to.                 	| /subscriptions/{SUBSCRIPTION_ID}/resourceGroups/{RESOURCE_GROUP_NAME}/providers/Microsoft.Network/virtualHubs/MyVirtualHub 	|
+| `HUB_NETWORK_RESOURCE_ID` 	| The Azure Virtual Hub resource ID to attach Azure virtual networks to.                 	| /subscriptions/{SUBSCRIPTION_ID}/resourceGroups/{RESOURCE_GROUP_NAME}<br>/providers/Microsoft.Network/virtualHubs/MyVirtualHub 	|
 | `DNS_SERVERS`             	| The comma delimited list of DNS servers to set on the Azure virtual network created.co 	| "10.0.0.1", "10.0.0.2"                                                                                                     	|
 
 #### Prerequisites
@@ -164,7 +164,7 @@ TBD
         - `AZURE_CLIENT_ID`: The client ID of the Azure service principal.
         - `AZURE_TENANT_ID`: The tenant ID of your Azure Active Directory.
         - `AZURE_SUBSCRIPTION_ID`: The subscription ID where resources will be managed.        
-3. ***GitHub Setup:**
+3. **GitHub Setup:**
     - **GitHub Application:**
         - see [documentation](/README.md#setup-github-application)
     - **GitHub Actions Variables:**
