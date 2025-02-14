@@ -1,0 +1,100 @@
+{
+  "request_id": "auto-generated",
+  "global_id": "wPizza",
+  "project_name": "my project wPizza",
+  "organization": "ih",
+  "workload": "Production",
+  "billing_enrollment_account": "123456",
+  "management_group_id": "msft-testing",
+  "network_watcher_resource_group_enabled" : false,
+  "subscriptions": [
+     {
+      "environment": "sbx",
+      "subscription_id": "",
+      "subscription_display_name": "blink",
+      "subscription_alias_name": "blink",
+      "address_space": "192.168.1.0/24",
+      "location": "westus2",
+      "peering": false,
+      "budget": {
+        "budget_amount": 8000,
+        "budget_occurrence": "monthly",
+        "budget_threshold": 800,
+        "budget_notification_emails": [
+          "email_1@domain.com",
+          "email_2@domain.com"
+        ]
+      }
+    },
+    {
+      "environment": "dev",
+      "subscription_id": "",
+      "address_space": "192.168.2.0/24",
+      "location": "westus2",
+      "peering": false,
+      "budget": {
+        "budget_amount": 8000,
+        "budget_occurrence": "monthly",
+        "budget_threshold": 800,
+        "budget_notification_emails": [
+          "email_1@domain.com",
+          "email_2@domain.com"
+        ]
+      }
+    },
+    {
+      "environment": "tst",
+      "subscription_id": "",
+      "address_space": "192.168.3.0/24",
+      "location": "westus2",
+      "peering": false,
+      "budget": {
+        "budget_amount": 8000,
+        "budget_occurrence": "monthly",
+        "budget_threshold": 800,
+        "budget_notification_emails": [
+          "email_1@domain.com",
+          "email_2@domain.com"
+        ]
+      }
+    },
+    {
+      "environment": "prd",
+      "subscription_id": "",
+      "address_space": "192.168.4.0/24",
+      "location": "westus2",
+      "peering": false,
+      "budget": {
+        "budget_amount": 8000,
+        "budget_occurrence": "monthly",
+        "budget_threshold": 800,
+        "budget_notification_emails": [
+          "email_1@domain.com",
+          "email_2@domain.com"
+        ]
+      }
+    }
+  ],
+  "default_resource_groups": 2,
+  "request_custom_resource_groups": [
+    "azr-blink6-rg-01",
+    "azr-blink6-rg-02"
+  ],
+  "tags": {
+    "Application": "blink6",
+    "BusinessStream": "blink6",
+    "CostCenter": "123456",
+    "Customer": "blink6",
+    "UserGroup": "blink6"
+  },
+  "contact_email_address": "requestor.owner@domain.com",
+  "alternative_email_addresses": [
+    "team1@domain.com",
+    "email2@domain.com"
+  ],
+  "aad_groups": {
+    "contributor": "",
+    "PIM": "",
+    "reader": ""
+  }
+}
