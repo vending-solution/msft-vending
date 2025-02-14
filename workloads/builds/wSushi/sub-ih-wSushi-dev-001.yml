@@ -1,0 +1,58 @@
+name: sub-ih-wSushi-dev-001
+request_id: auto-generated
+global_id: wSushi
+workload: Production
+billing_enrollment_account: 123456
+management_group_id: msft-testing
+network_watcher_resource_group_enabled: false
+contact_email_address: requestor.owner@domain.com
+alternative_email_addresses:
+- team1@domain.com
+- email2@domain.com
+tags:
+  Application: blink6
+  BusinessStream: blink6
+  CostCenter: 123456
+  Customer: blink6
+  UserGroup: blink6
+aad_groups:
+  contributor: 
+  PIM: 
+  reader: 
+environment: dev
+virtual_networks:
+  vnet001:
+    dns_servers:
+    - 10.0.0.1
+    - 10.0.0.2
+    hub_peering_enabled: true
+    resource_group_lock_enabled: false
+    hub_network_resource_id: /test
+    hub_peering_use_remote_gateways: false
+    address_space:
+    - 192.168.2.0/24
+    name: vnet-wSushi-wus2-dev-001
+    resource_group_name: rg-wSushi-wus2-dev-001
+    peering: false
+location: westus2
+budget_creation_enabled: true
+budgets:
+  budget:
+    budget_amount: 8000
+    budget_occurrence: monthly
+    budget_threshold: 800
+    budget_notification_emails:
+    - email_1@domain.com
+    - email_2@domain.com
+health_alerts_enabled: false
+role_assignment_enabled: true
+role_assignments:
+  assignment_2:
+    definition: Reader
+    principal_id: 
+    relative_scope: 
+  assignment_1:
+    definition: Contributor
+    principal_id: 
+    relative_scope: 
+
