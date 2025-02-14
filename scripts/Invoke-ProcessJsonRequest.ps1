@@ -12,6 +12,7 @@ Requirements:
 
 Logic:
 - Install required modules
+- Setup subscription/build directories for the request
 - Read the JSON request
 - Create Subscription YAML files
 - Create Resource YAML files
