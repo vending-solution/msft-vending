@@ -171,6 +171,15 @@ function Get-BuildData() {
     return $subData + $buildHashTable
 }
 
+function New-YamlFile() {
+    param(
+        [hashtable]$Data,
+        [string]$FilePath
+    )
+    $content = ConvertTo-Yaml -data $Data -UseFlowStyle
+    $content -replace '"', '' | Out-File -FilePath $FilePath -Force
+}
+
 function New-SubscriptionYamlFile() {
     param(
         [hashtable]$Request,
@@ -178,9 +187,8 @@ function New-SubscriptionYamlFile() {
     ) 
     Write-Host "Creating subscription YAML file for $($Subscription.environment)..."
     $data = Get-SubscriptionData -Request $Request -Subscription $Subscription
-    $content = ConvertTo-Yaml -data $data -UseFlowStyle
     $filePath = Join-Path -Path $WorkloadsDirectory -ChildPath "subscriptions/$GlobalId/$($data.name).yml"
-    $content -replace '"', '' | Out-File -FilePath $filePath -Force
+    New-YamlFile -Data $data -FilePath $filePath
 }
 
 function New-BuildYamlFile() {
@@ -195,9 +203,8 @@ function New-BuildYamlFile() {
 
     # Get YAML data and create file
     $data = Get-BuildData -Location $location -Request $Request -Subscription $Subscription
-    $content = ConvertTo-Yaml -data $data -UseFlowStyle
     $filePath = Join-Path -Path $WorkloadsDirectory -ChildPath "builds/$GlobalId/$($data.name).yml"
-    $content -replace '"', '' | Out-File -FilePath $filePath -Force
+    New-YamlFile -Data $data -FilePath $filePath
 }    
 
 # Install modules
