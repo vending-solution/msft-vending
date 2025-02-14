@@ -1,145 +1,153 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "$id": "http://vending-solution.com/vending-request-schema.json",
-    "description": "",
-    "type": "object",
-    "properties": {
-      "vending_support_team": {
-        "type": "string",
-        "minLength": 1
-      },
-      "request_id": {
-        "type": "string",
-        "minLength": 1
-      },
-      "global_id": {
-        "type": "string",
-        "minLength": 1
-      },
-      "user_name": {
-        "type": "string",
-        "minLength": 1
-      },
-      "contact_email_address": {
-        "type": "string",
-        "minLength": 1
-      },
-      "aad_groups": {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "request_id": {
+      "type": "string"
+    },
+    "global_id": {
+      "type": "string"
+    },
+    "project_name": {
+      "type": "string"
+    },
+    "organization": {
+      "type": "string"
+    },
+    "workload": {
+      "type": "string"
+    },
+    "billing_enrollment_account": {
+      "type": "string"
+    },
+    "management_group_id": {
+      "type": "string"
+    },
+    "network_watcher_resource_group_enabled": {
+      "type": "boolean"
+    },
+    "subscriptions": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 0,
+      "items": {
         "type": "object",
         "properties": {
-          "owner": {
-            "type": "string",
-            "minLength": 1
+          "environment": {
+            "type": "string"
           },
-          "reader": {
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "required": [
-          "owner",
-          "reader"
-        ]
-      },
-      "tags": {
-        "type": "object",
-        "properties": {
-          "Application": {
-            "type": "string",
-            "minLength": 1
+          "subscription_id": {
+            "type": "string"
           },
-          "BusinessStream": {
-            "type": "string",
-            "minLength": 1
+          "subscription_display_name": {
+            "type": "string"
           },
-          "CostCenter": {
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "required": [
-          "Application",
-          "BusinessStream",
-          "CostCenter"
-        ]
-      },
-      "default_resource_groups": {
-        "type": "number"
-      },
-      "subscriptions": {
-        "type": "array",
-        "uniqueItems": true,
-        "minItems": 0,
-        "items": {
-          "required": [            
-            "network_peering",
-            "network_IP_space",
-            "notes"
-          ],
-          "properties": {
-            "sbx": {
-              "type": "boolean"
-            },
-            "network_peering": {
-              "type": "boolean"
-            },
-            "network_IP_space": {
-              "type": "string",
-              "minLength": 1
-            },
-            "notes": {
-              "type": "string",
-              "minLength": 1
-            },
-            "budgets": {
-              "type": "object",
-              "properties": {
-                "budget": {
-                  "type": "object",
-                  "properties": {
-                    "budget_amount": {
-                      "type": "number"
-                    },
-                    "budget_occurrence": {
-                      "type": "string",
-                      "minLength": 1
-                    },
-                    "budget_threshold": {
-                      "type": "number"
-                    },
-                    "budget_notification_emails": {
-                      "type": "array",
-                      "items": {
-                        "required": [],
-                        "properties": {}
-                      }
-                    }
-                  },
-                  "required": [
-                    "budget_amount",
-                    "budget_occurrence",
-                    "budget_threshold",
-                    "budget_notification_emails"
-                  ]
-                }
+          "subscription_alias_name": {
+            "type": "string"
+          },
+          "address_space": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "peering": {
+            "type": "boolean"
+          },
+          "budget": {
+            "type": "object",
+            "properties": {
+              "budget_amount": {
+                "type": "number"
               },
-              "required": [
-                "budget"
-              ]
-            }
+              "budget_occurrence": {
+                "type": "string"
+              },
+              "budget_threshold": {
+                "type": "number"
+              },
+              "budget_notification_emails": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": ["budget_amount", "budget_occurrence", "budget_threshold", "budget_notification_emails"]
           }
-        }
+        },
+        "required": ["environment", "subscription_id", "address_space", "location", "peering", "budget"]
       }
     },
-    "required": [
-      "vending_support_team",
-      "request_id",
-      "global_id",
-      "user_name",
-      "contact_email_address",
-      "aad_groups",
-      "tags",
-      "default_resource_groups",
-      "subscriptions"
-    ]
-  }
+    "default_resource_groups": {
+      "type": "number"
+    },
+    "request_custom_resource_groups": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "object",
+      "properties": {
+        "Application": {
+          "type": "string"
+        },
+        "BusinessStream": {
+          "type": "string"
+        },
+        "CostCenter": {
+          "type": "string"
+        },
+        "Customer": {
+          "type": "string"
+        },
+        "UserGroup": {
+          "type": "string"
+        }
+      },
+      "required": ["Application", "BusinessStream", "CostCenter", "Customer", "UserGroup"]
+    },
+    "contact_email_address": {
+      "type": "string"
+    },
+    "alternative_email_addresses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "aad_groups": {
+      "type": "object",
+      "properties": {
+        "contributor": {
+          "type": "string"
+        },
+        "PIM": {
+          "type": "string"
+        },
+        "reader": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "request_id",
+    "global_id",
+    "project_name",
+    "organization",
+    "workload",
+    "billing_enrollment_account",
+    "management_group_id",
+    "network_watcher_resource_group_enabled",
+    "subscriptions",
+    "default_resource_groups",
+    "request_custom_resource_groups",
+    "tags",
+    "contact_email_address",
+    "alternative_email_addresses",
+    "aad_groups"
+  ]
+}
