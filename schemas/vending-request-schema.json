@@ -76,7 +76,7 @@
             "required": ["budget_amount", "budget_occurrence", "budget_threshold", "budget_notification_emails"]
           }
         },
-        "required": ["environment", "subscription_id", "address_space", "location", "peering", "budget"]
+        "required": ["environment", "subscription_id", "address_space", "location", "peering"]
       }
     },
     "default_resource_groups": {
