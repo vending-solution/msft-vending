@@ -33,6 +33,8 @@ jobs:
         run: |
           # Validate request JSON against schema
           $jsonRequestInput = '${{ inputs.request_json }}'
+          Write-Host "Validating request JSON against schema..."
+          Write-Host "Request JSON: $jsonRequestInput"
           $requestSchema = Get-Content "${{ github.workspace }}/schemas/vending-request-schema.json" -Raw
           $jsonRequestInput | Test-Json -Schema $requestSchema
         shell: pwsh
