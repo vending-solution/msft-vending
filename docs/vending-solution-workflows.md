@@ -145,6 +145,7 @@ The workflow is triggered from the GitHub Actions pull_request event for the fol
 
 | Name                      	| Description                     	| Example                                 	|
 |---------------------------	|---------------------------------	|-----------------------------------------	|
+TBD
 
 #### Prerequisites
 
@@ -169,6 +170,9 @@ The workflow is triggered from the GitHub Actions pull_request event for the fol
     - **GitHub Actions Variables:**
         - Setup required [variables](#variables).
     - **Terraform Variables:**
-        - TBD (backend...)
+        - Assumes the same storage account is used for the subscription and resource state.
+        - `Resource Group Name` - The Azure resource group name that has the Azure Storage Account used to store Terraform state.
+        - `Storage Account Name` - The Azure Storage Account name used to store Terraform state.
+        - The Azure application defined in requirement [#2](#prerequisites-1) requires `Storage Blob Data Contributor` role on the storage account.
 
 [^ table of contents ^](#table-of-contents)
