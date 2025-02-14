@@ -9,15 +9,19 @@ This document outlines the GitHub Actions workflows used to process and deploy t
         1. [Capabilities](#capabilities)
         1. [Inputs](#inputs-description)
         1. [Trigger](#triggering-the-workflow)
+        1. [Variables](#variables)
+        1. [Prerequisites](#prerequisites)
     1. [Vending Solution Request Deployment](#vending-solution-request-deployment)
         1. [Capabilities](#capabilities-1)
-        1. [Inputs](#inputs-description-)
+        1. [Inputs](#inputs-description-1)
         1. [Trigger](#triggering-the-workflow-1)
+        1. [Variables](#variables-1)
+        1. [Prerequisites](#prerequisites-1)
 
 ## Workflows
 
-- .github\workflows\vending-request-handler-workflow.yml
-- .github\workflows\vending-request-processor-workflow.yml
+- [Vending Solution Request Processor](#vending-solution-request-processor) - Source is found [here](/.github/workflows/vending-request-handler-workflow.yml)
+- [Vending Solution Request Deployment](#vending-solution-request-deployment) - Source is found [here](/.github/workflows/vending-request-processor-workflow.yml)
 
 ### Vending Solution Request Processor
 
@@ -83,9 +87,11 @@ Currently this workflow is manually triggered and allows someone to specify the 
         - `AZURE_SUBSCRIPTION_ID`: The subscription ID where resources will be managed.
     - **GitHub Actions Variables:**
         - Setup required [variables](#variables).
-
+        - Variables are currently set in the workflow file. *These should be moved to the GitHub repository environment.*
 
 ### Vending Solution Request Deployment
+
+This workflow is designed to deploy the approved vending assets for the request in scope. This will deploy the subscriptions requested and resources.
 
 ```mermaid
 flowchart TD
@@ -115,8 +121,54 @@ flowchart TD
 
 #### Capabilities
 
+1. Sets workflow scope given pull request details
+1. Supports idempotent deployments
+1. Deploys all specified subscriptions
+1. Deploys all specified resources to the respective subscriptions
+
 #### Triggering the Workflow
 
+The workflow is triggered from the GitHub Actions pull_request event for the following conditions:
+- Pull request is closed
+- Pull request targets `main` branch
+- Pull request includes changes to the following path `workloads/requests/**`
+- Pull request is merged. *This condition only affects the workflow job, the workflow itself may trigger if this is false. This would be a case where the PR is not approved or closed and not merged.*
+- A manual trigger is run using the global_id.
+
 #### Inputs Description
+
+| Name        	| Description                                                                                                                                                                                                  	| Type   	| Default Value 	| Required 	|
+|-------------	|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|--------	|---------------	|----------	|
+| `global_id` 	| The unique global identifier of the application/system that maps to the specified Azure subscription and resources.<br>This value uses the assets in the `workloads/` directory for the specific identifier. 	| string 	| n/a           	| yes      	|
+
+#### Variables
+
+| Name                      	| Description                     	| Example                                 	|
+|---------------------------	|---------------------------------	|-----------------------------------------	|
+
+#### Prerequisites
+
+1. **GitHub Permissions:**
+    - Ensure the appropriate GitHub permissions are set in your trigger file:
+        - `security-events: write`
+        - `contents: read`
+        - `actions: read`
+        - `id-token: write`     
+
+2. **Azure Authentication Setup:**    
+    - **GitHub Actions Environment:**
+        - Create a GitHub Actions environment and define the required secrets for authenticating with Azure. This ensures that sensitive information is securely stored and managed.
+    - **Federated Credentials (Recommended):**
+        - Use [Federated Credentials](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation-create-trust?pivots=identity-wif-apps-methods-azp#configure-a-federated-identity-credential-on-an-app) for secure, passwordless authentication. With federated credentials, store the following secrets in your GitHub Actions environment:
+        - `AZURE_CLIENT_ID`: The client ID of the Azure service principal.
+        - `AZURE_TENANT_ID`: The tenant ID of your Azure Active Directory.
+        - `AZURE_SUBSCRIPTION_ID`: The subscription ID where resources will be managed.        
+3. ***GitHub Setup:**
+    - **GitHub Application:**
+        - see [documentation](/README.md#setup-github-application)
+    - **GitHub Actions Variables:**
+        - Setup required [variables](#variables).
+    - **Terraform Variables:**
+        - TBD (backend...)
 
 [^ table of contents ^](#table-of-contents)

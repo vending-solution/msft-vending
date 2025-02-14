@@ -212,4 +212,4 @@ see the [documentation](.github/workflows/README.md) for the Terraform workflows
 
 ## Vending Workflow
 
-TBD
+see the [documentation](/docs/vending-solution-workflows.md) for more details on the workflow.
