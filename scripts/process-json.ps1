@@ -75,7 +75,7 @@ foreach ($subscription in $json.subscriptions) {
         global_id = $($json.global_id)
         workload= $($json.workload)
         billing_enrollment_account= $($json.billing_enrollment_account)
-        subscription_management_group_association_enabled = $($json.subscription_management_group_association_enabled)
+        management_group_association_enabled = $($json.management_group_association_enabled)
         management_group_id= $($json.management_group_id)
         network_watcher_resource_group_enabled = $($json.network_watcher_resource_group_enabled)
         contact_email_address = $($json.contact_email_address)
@@ -83,6 +83,7 @@ foreach ($subscription in $json.subscriptions) {
         tags = $json.tags
         aad_groups = $($json.aad_groups)
         environment = $subscription.environment
+        virtual_network_enabled = $($subscription.virtual_network_enabled)
         virtual_networks = @{
             vnet1 = @{
                 name = "vnet-$($json.global_id)-$($location)-$($subscription.environment)-001"
@@ -99,18 +100,18 @@ foreach ($subscription in $json.subscriptions) {
         location = $subscription.location
         budget_creation_enabled = 'true'
         budgets = @{budget = $subscription.budget}
-        health_alerts_enabled= 'false'
-        role_assignment_enabled= 'true'
+        health_alerts_enabled = 'false'
+        role_assignment_enabled = $($json.role_assignment_enabled)
         role_assignments= @{
             my_assignment_1 = @{
-                principal_id= "$($json.aad_groups.contributor)" # group id
+                principal_id = "$($json.aad_groups.contributor)" # group id
                 definition= "Contributor"
-                relative_scope= ''
+                relative_scope = ''
             }
             my_assignment_2 = @{
-                principal_id= "$($json.aad_groups.reader)" # group id
-                definition= "Reader"
-                relative_scope= ''
+                principal_id = "$($json.aad_groups.reader)" # group id
+                definition = "Reader"
+                relative_scope = ''
             }
         }
     }

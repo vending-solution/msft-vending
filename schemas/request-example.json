@@ -5,18 +5,18 @@
   "organization": "ih",
   "workload": "Production",
   "billing_enrollment_account": "123456",
-  "subscription_management_group_association_enabled": false,
+  "management_group_association_enabled": false,
   "management_group_id": "msft-testing",
   "network_watcher_resource_group_enabled" : false,
   "subscriptions": [
      {
       "environment": "sbx",
       "subscription_id": "",
-      "subscription_display_name": "blink",
-      "subscription_alias_name": "blink",
+      "virtual_network_enabled": true,
       "address_space": "192.168.1.0/24",
       "location": "westus2",
       "peering": false,
+      "budget_creation_enabled": false,
       "budget": {
         "budget_amount": 8000,
         "budget_occurrence": "monthly",
@@ -30,9 +30,11 @@
     {
       "environment": "dev",
       "subscription_id": "",
+      "virtual_network_enabled": true,
       "address_space": "192.168.2.0/24",
       "location": "westus2",
       "peering": false,
+      "budget_creation_enabled": false,
       "budget": {
         "budget_amount": 8000,
         "budget_occurrence": "monthly",
@@ -46,9 +48,11 @@
     {
       "environment": "tst",
       "subscription_id": "",
+      "virtual_network_enabled": true,
       "address_space": "192.168.3.0/24",
       "location": "westus2",
       "peering": false,
+      "budget_creation_enabled": false,
       "budget": {
         "budget_amount": 8000,
         "budget_occurrence": "monthly",
@@ -62,9 +66,11 @@
     {
       "environment": "prd",
       "subscription_id": "",
+      "virtual_network_enabled": true,
       "address_space": "192.168.4.0/24",
       "location": "westus2",
       "peering": false,
+      "budget_creation_enabled": false,
       "budget": {
         "budget_amount": 8000,
         "budget_occurrence": "monthly",
@@ -93,6 +99,7 @@
     "team1@domain.com",
     "email2@domain.com"
   ],
+  "role_assignment_enabled": false,
   "aad_groups": {
     "contributor": "",
     "PIM": "",

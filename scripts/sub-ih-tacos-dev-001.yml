@@ -1,0 +1,61 @@
+subscription_id: 
+name: sub-ih-tacos-dev-001
+request_id: auto-generated
+global_id: tacos
+workload: Production
+billing_enrollment_account: 123456
+management_group_association_enabled: false
+management_group_id: msft-testing
+network_watcher_resource_group_enabled: false
+contact_email_address: requestor.owner@domain.com
+alternative_email_addresses:
+- team1@domain.com
+- email2@domain.com
+tags:
+  Application: tacos
+  BusinessStream: tacos
+  CostCenter: 123456
+  Customer: tacos
+  UserGroup: tacos
+aad_groups:
+  contributor: 
+  PIM: 
+  reader: 
+environment: dev
+virtual_network_enabled: true
+virtual_networks:
+  vnet1:
+    resource_group_name: rg-tacos-wus2-dev-001
+    hub_peering_enabled: false
+    peering: false
+    hub_peering_use_remote_gateways: false
+    hub_network_resource_id: /subscriptions/d200e3b2-c0dc-4076-bd30-4ccccf05ffeb/resourceGroups/cesart10-connectivity-eastus/providers/Microsoft.Network/virtualNetworks/cesart10-hub-eastus
+    address_space:
+    - 192.168.2.0/24
+    dns_servers:
+    - 10.0.0.1
+    - 10.0.0.2
+    resource_group_lock_enabled: false
+    name: vnet-tacos-wus2-dev-001
+location: westus2
+budget_creation_enabled: true
+budgets:
+  budget:
+    budget_amount: 8000
+    budget_occurrence: monthly
+    budget_threshold: 800
+    budget_notification_emails:
+    - email_1@domain.com
+    - email_2@domain.com
+health_alerts_enabled: false
+role_assignment_enabled: false
+role_assignments:
+  my_assignment_1:
+    principal_id: 
+    relative_scope: 
+    definition: Contributor
+  my_assignment_2:
+    principal_id: 
+    relative_scope: 
+    definition: Reader
+
