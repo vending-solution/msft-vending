@@ -1,6 +1,18 @@
 ## Overview
 
+This document outlines the GitHub Actions workflows used to process and deploy the Vending Solution. This process consists of 2 GitHub Actions workflows. The process uses a GitOps approach with configuration as code. Pull Request approvals will trigger the deployment of resources.
+
 ## Table of Contents
+
+1. [Workflows](#workflows)
+    1. [Vending Solution Request Processor](#vending-solution-request-processor)
+        1. [Capabilities](#capabilities)
+        1. [Inputs](#inputs-description)
+        1. [Trigger](#triggering-the-workflow)
+    1. [Vending Solution Request Deployment](#vending-solution-request-deployment)
+        1. [Capabilities](#capabilities-1)
+        1. [Inputs](#inputs-description-)
+        1. [Trigger](#triggering-the-workflow-1)
 
 ## Workflows
 
@@ -8,6 +20,8 @@
 - .github\workflows\vending-request-processor-workflow.yml
 
 ### Vending Solution Request Processor
+
+This workflow is designed to ingest and process a JSON formatted request to initiate the vending process by validating the JSON request and generating the required Vending assets.
 
 ```mermaid
 flowchart TD
@@ -20,8 +34,56 @@ flowchart TD
     F --> G(Create branch features/subscriptions/_global_id_)
     G --> H(Submit Pull Request)
     H -->|complete| Z
-
 ```
+
+#### Capabilities
+
+1. Validate JSON against schema
+1. Generate Vending assets
+    1. Vending YAML files
+    1. Terraform variable files
+1. Create GitHub Pull Request for approval
+
+#### Triggering the Workflow
+
+> NOTE: This requirement is not flushed out.
+
+Currently this workflow is manually triggered and allows someone to specify the JSON as an input to the workflow. In the future, this may integrate with external processes such as Service Now.
+
+#### Inputs Description
+
+| Name           	| Description                                                                             	| Type   	| Default Value 	| Required 	|
+|----------------	|-----------------------------------------------------------------------------------------	|--------	|---------------	|----------	|
+| `request_json` 	| The vending JSON request to be processed. see [example](/examples/request-example.json) 	| string 	| n/a           	| yes      	|
+
+#### Variables
+
+| Name                      	| Description                                                                            	| Example                                                                                                                    	|
+|---------------------------	|----------------------------------------------------------------------------------------	|----------------------------------------------------------------------------------------------------------------------------	|
+| `HUB_NETWORK_RESOURCE_ID` 	| The Azure Virtual Hub resource ID to attach Azure virtual networks to.                 	| /subscriptions/{SUBSCRIPTION_ID}/resourceGroups/{RESOURCE_GROUP_NAME}/providers/Microsoft.Network/virtualHubs/MyVirtualHub 	|
+| `DNS_SERVERS`             	| The comma delimited list of DNS servers to set on the Azure virtual network created.co 	| "10.0.0.1", "10.0.0.2"                                                                                                     	|
+
+#### Prerequisites
+
+1. **GitHub Permissions:**
+    - Ensure the appropriate GitHub permissions are set in your trigger file:
+        - `pull-requests: write`
+        - `contents: write`
+        - `actions: write`
+        - `id-token: write`     
+
+2. **Azure Authentication Setup:**
+   - **GitHub Actions Environment:**
+        - Create a GitHub Actions environment and define the required secrets for authenticating with Azure. This ensures that sensitive information is securely stored and managed.
+
+   - **Federated Credentials (Recommended):**
+     - Use [Federated Credentials](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation-create-trust?pivots=identity-wif-apps-methods-azp#configure-a-federated-identity-credential-on-an-app) for secure, passwordless authentication. With federated credentials, store the following secrets in your GitHub Actions environment:
+        - `AZURE_CLIENT_ID`: The client ID of the Azure service principal.
+        - `AZURE_TENANT_ID`: The tenant ID of your Azure Active Directory.
+        - `AZURE_SUBSCRIPTION_ID`: The subscription ID where resources will be managed.
+    - **GitHub Actions Variables:**
+        - Setup required [variables](#variables).
+
 
 ### Vending Solution Request Deployment
 
@@ -50,3 +112,11 @@ flowchart TD
         Terraform2 -->G(Submit Pull Request)
         G -->|complete|Z    
 ```
+
+#### Capabilities
+
+#### Triggering the Workflow
+
+#### Inputs Description
+
+[^ table of contents ^](#table-of-contents)
