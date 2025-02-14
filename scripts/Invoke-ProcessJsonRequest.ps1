@@ -95,8 +95,8 @@ function Install-RequiredModules() {
 }
 
 function Set-AssetDirectories() {
-    $subscriptionsPath = "$WorkloadsDirectory/subscriptions/$GlobalId"
-    $buildsPath = "$WorkloadsDirectory/builds/$GlobalId"
+    $subscriptionsPath = Join-Path -Path $WorkloadsDirectory -ChildPath "subscriptions/$GlobalId"
+    $buildsPath = Join-Path -Path $WorkloadsDirectory -ChildPath "builds/$GlobalId"
 
     if (-not (Test-Path -Path $subscriptionsPath)) {
         New-Item -Path $subscriptionsPath -ItemType Directory | Out-Null
@@ -142,7 +142,7 @@ function Get-BuildData() {
                 address_space                   = @($Subscription.address_space)
                 peering                         = $Subscription.peering
                 dns_servers                     = @($DnsServers)
-                hub_peering_enabled             = If ($HubNetworkResourceId -eq '') { 'fa;se' } else { 'true' }
+                hub_peering_enabled             = If ($HubNetworkResourceId -eq '') { 'false' } else { 'true' }
                 hub_network_resource_id         = $HubNetworkResourceId
                 hub_peering_use_remote_gateways = 'false' # Static values
                 resource_group_name             = "rg-$($Request.global_id)-$($Location)-$($Subscription.environment)-001"
@@ -179,7 +179,8 @@ function New-SubscriptionYamlFile() {
     Write-Host "Creating subscription YAML file for $($Subscription.environment)..."
     $data = Get-SubscriptionData -Request $Request -Subscription $Subscription
     $content = ConvertTo-Yaml -data $data -UseFlowStyle
-    $content -replace '"', '' | Out-File -FilePath "$WorkloadsDirectory/subscriptions/$GlobalId/$($data.name).yml" -Force
+    $filePath = Join-Path -Path $WorkloadsDirectory -ChildPath "subscriptions/$GlobalId/$($data.name).yml"
+    $content -replace '"', '' | Out-File -FilePath $filePath -Force
 }
 
 function New-BuildYamlFile() {
@@ -190,13 +191,13 @@ function New-BuildYamlFile() {
     Write-Host "Creating build YAML file for $($Subscription.environment)..."
 
     # Use location abbreviation
-    $location = $locationMap[$Subscription.location]
+    $location = $locationMap[$Subscription.location]    
 
-    # locationMap
-
+    # Get YAML data and create file
     $data = Get-BuildData -Location $location -Request $Request -Subscription $Subscription
     $content = ConvertTo-Yaml -data $data -UseFlowStyle
-    $content -replace '"', '' | Out-File -FilePath "$WorkloadsDirectory/builds/$GlobalId/$($data.name).yml" -Force
+    $filePath = Join-Path -Path $WorkloadsDirectory -ChildPath "builds/$GlobalId/$($data.name).yml"
+    $content -replace '"', '' | Out-File -FilePath $filePath -Force
 }    
 
 # Install modules
@@ -206,7 +207,8 @@ Install-RequiredModules
 Set-AssetDirectories
 
 # Load Request
-$request = Get-Content "$WorkloadsDirectory/requests/$GlobalId/request.json" -Raw | ConvertFrom-Json -Depth 100 -AsHashtable
+$requestPath = Join-Path -Path $WorkloadsDirectory -ChildPath "requests/$GlobalId/request.json"
+$request = Get-Content $requestPath -Raw | ConvertFrom-Json -Depth 100 -AsHashtable
 
 # For each subscription, create a subscription YAML and build/resource YAML
 foreach ($subscription in $request.subscriptions) {
