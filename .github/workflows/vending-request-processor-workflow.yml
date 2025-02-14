@@ -2,11 +2,6 @@
 name: Vending Request Processor Workflow
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'workloads/requests/**'
   pull_request:
     types:
       - closed
@@ -14,62 +9,82 @@ on:
       - main
     paths:
       - 'workloads/requests/**'
-  workflow_dispatch:  
+  workflow_dispatch:
+    inputs:
+      request_id:
+        required: true
+        default: 'wBurgers'
+        description: 'The vending request ID to be processed.'    
+
+permissions:
+  contents: read
+  id-token: write
+  actions: read  
+  security-events: write
 
 jobs:
-  processor-yml:
-    name: Generate Vending YAML Files
+  set-request:
+    name: Set Request ID
+    if: (github.event.pull_request.merged == true && startsWith(github.head_ref, 'features/subscriptions/')) || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    environment: sbx
+    outputs:
+      request_id: ${{ steps.parse-id.outputs.request_id }}
     steps:
-      - name: Details
-        run: |
-          echo "Start creating YAML files..."
-          echo "Github.ref: $GITHUB_REF"
-          echo "Github.event_name: $GITHUB_EVENT_NAME"
-          echo "Github.event_path: $GITHUB_EVENT_PATH"
-          echo "Github.event: $GITHUB_EVENT"
-          echo "Github.ref: ${{github.ref}}"
-          echo "Github.event_name: ${{github.event_name}}"
-          echo "Github.event_path: ${{github.event_path}}"
-          echo "Github.event: ${{github.env}}"
-          echo "Github.base_ref: ${{github.base_ref}}"
-          echo "Github.head_ref: ${{github.head_ref}}"
-          echo "Github.ref_name: ${{github.ref_name}}"
-          echo "Github.action_ref: ${{github.action_ref}}"
-          echo "Github.head_commit.message: ${{github.event.head_commit.message}}"
-          echo "Github.event.base_ref: ${{github.event.base_ref}}"
-          echo "Github.event.before: ${{github.event.before}}"
-          $commitMessage="${{github.event.head_commit.message}}"
-          $requestId = $commitMessage.split("/")[-1]
-          echo "Request ID: $requestId"
-        shell: pwsh
-  processor-yml-merged:
-    name: Generate Vending YAML Files if PR is Merged
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    environment: sbx
-    steps:
-      - name: Details
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Set Request ID
+        id: parse-id
         shell: pwsh
         run: |
-          echo "Start creating YAML files..."
-          echo "Github.ref: $GITHUB_REF"
-          echo "Github.event_name: $GITHUB_EVENT_NAME"
-          echo "Github.event_path: $GITHUB_EVENT_PATH"
-          echo "Github.event: $GITHUB_EVENT"
-          echo "Github.ref: ${{github.ref}}"
-          echo "Github.event_name: ${{github.event_name}}"
-          echo "Github.event_path: ${{github.event_path}}"
-          echo "Github.base_ref: ${{github.base_ref}}"
-          echo "Github.head_ref: ${{github.head_ref}}"
-          echo "Github.event.pull_request.head.ref: "${{github.event.pull_request.head.ref}}"
-          echo "Github.event.pull_request.base.label: "${{github.event.pull_request.base.label}}"
-          echo "Github.ref_name: ${{github.ref_name}}"
-          echo "Github.action_ref: ${{github.action_ref}}"
-          echo "Github.event.base_ref: ${{github.event.base_ref}}"
-          echo "Github.event.before: ${{github.event.before}}"
-          echo "Github.head_commit.message: ${{github.event.head_commit.message}}"          
-          $prBranch = "${{github.head_ref}}"
-          $requestId = $prBranch.split("/")[-1]
+          $requestPath = $env:REQUEST_PATH
+          $requestId = $requestPath.split("/")[-1]
           echo "Request ID: $requestId"
+          echo "request_id=$requestId" >> $env:GITHUB_OUTPUT
+          echo "REQUEST_ID=$requestId" >> $env:GITHUB_ENV
+        env:
+          REQUEST_PATH: ${{ github.head_ref || inputs.request_id }}  
+  terraform-sub:
+    name: Terraform Subscription Orchestration ${{ needs.set-request.outputs.request_id }}
+    if: needs.set-request.outputs.request_id != ''
+    #uses: vending-solution/reusable-workflows/.github/workflows/tf_orchestration.yml@main
+    uses: ./.github/workflows/tf_orchestration.yml
+    needs: set-request
+    secrets: inherit
+    with:
+      tf_version: 'latest'
+      working_directory: 'terraform/vnet-deployment'
+      environment: 'dev'
+      gh_environment: 'sbx'
+      backend_azure_rm_resource_group_name: 'rg-lra-tf-dev-eus1'
+      backend_azure_rm_storage_account_name: 'stalratfdeveus1'
+      backend_azure_rm_container_name: 'poctfstate'
+      backend_azure_rm_key: 'lratfdev.tfstate'
+      #backend_azure_rm_key: '${{ needs.set-request.outputs.request_id }}.tfstate'
+      plan_file_name: 'terraform.tfplan'
+      var_file: '../../environments/landing-zones.tfvars'
+      #var_file: '../../workloads/subscriptions/${{ needs.set-request.outputs.request_id }}/inputs.tfvars'
+      artifact_affix: "sub"
+  # TODO : Output the new sub id from the module
+  terraform-build:
+    name: Terraform Build Orchestration ${{ needs.set-request.outputs.request_id }} - ${{ needs.terraform-sub.outputs.subscription_id }}
+    if: needs.set-request.outputs.request_id != ''
+    #&& needs.terraform-sub.outputs.subscription_id != ''
+    #uses: vending-solution/reusable-workflows/.github/workflows/tf_orchestration.yml@main
+    uses: ./.github/workflows/tf_orchestration.yml
+    needs: [set-request, terraform-sub]
+    secrets: inherit
+    with:
+      tf_version: 'latest'
+      working_directory: 'terraform/vnet-deployment'
+      environment: 'dev'
+      gh_environment: 'sbx'
+      backend_azure_rm_resource_group_name: 'rg-lra-tf-dev-eus1'
+      backend_azure_rm_storage_account_name: 'stalratfdeveus1'
+      backend_azure_rm_container_name: 'poctfstate'
+      backend_azure_rm_key: 'lratfdev.tfstate'
+      #backend_azure_rm_key: '${{ needs.set-request.outputs.request_id }}.tfstate'
+      plan_file_name: 'terraform.tfplan'
+      var_file: '../../environments/landing-zones.tfvars'
+      #var_file: '../../workloads/builds/${{ needs.set-request.outputs.request_id }}/inputs.tfvars'
+      artifact_affix: "build"
+      

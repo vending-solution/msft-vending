@@ -47,6 +47,14 @@ on:
         required: false
         default: ''
         type: string
+      artifact_affix:
+        required: false
+        type: string
+        default: ''
+    outputs:
+      subscription_id:
+        description: 'Subscription ID'
+        value: ${{ jobs.apply.outputs.subscription_id }}
 
 jobs:
   validate:
@@ -75,6 +83,7 @@ jobs:
       backend_azure_rm_key: ${{ inputs.backend_azure_rm_key }}
       plan_file_name: ${{ inputs.plan_file_name }}
       var_file: ${{ inputs.var_file }}
+      artifact_affix: ${{ inputs.artifact_affix }}
 
   inspect:
     needs: plan
@@ -83,11 +92,12 @@ jobs:
     secrets: inherit
     with:
       gh_environment: ${{ inputs.gh_environment }}
+      artifact_affix: ${{ inputs.artifact_affix }}
 
 
   apply:
     needs: [plan, inspect]
-    if: startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/release/')
+    #if: startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/release/')
     # uses: casa-de-vops/terraform-code-standards/.github/workflows/tf_apply_task.yml@main
     uses: ./.github/workflows/tf_apply_task.yml
     secrets: inherit
@@ -100,3 +110,4 @@ jobs:
       backend_azure_rm_key: ${{ inputs.backend_azure_rm_key }}
       plan_file_name: ${{ inputs.plan_file_name }}
       var_file: ${{ inputs.var_file }}
+      artifact_affix: ${{ inputs.artifact_affix }}

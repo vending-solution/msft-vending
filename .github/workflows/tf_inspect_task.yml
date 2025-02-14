@@ -6,7 +6,11 @@ on:
     inputs:
       gh_environment:
         required: true
+        type: string        
+      artifact_affix:
+        required: false
         type: string
+        default: ''
 
 jobs:
   inspect:
@@ -45,5 +49,5 @@ jobs:
     - name: Upload alerts file as a workflow artifact
       uses: actions/upload-artifact@v4
       with:  
-        name: alerts
+        name: alerts${{ inputs.artifact_affix == '' && '' || format('-{0}', inputs.artifact_affix) }}
         path: ${{ steps.msdo.outputs.sarifFile }}

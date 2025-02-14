@@ -31,7 +31,7 @@ This repository includes an approach to deploy Azure Vending Solution using reus
 1. Azure Entra ID Application - Used for Azure authentication from GitHub Actions
 1. GitHub Actions - Run workflows to deploy vending solution
 1. Terraform - Reusable modules to deploy Azure infrastructure
-1. Azure Vending Solution
+1. Azure Vending Solution **(the framework should work for other solutions having the need to source the centrally stored terraform modules)**
 
 ## Setup Overview
 
@@ -81,16 +81,34 @@ flowchart TD
 1. In GitHub select-health organization:
    - Setup the vending solution repository.
    - Create the GitHub repository environments.
-   - Add repository level variables & secrets.
+   - Add organization level variables & secrets and limit to required repositories.
    - Add GitHub Application secrets at the organization level.
    - Verify vending solution workflow.
+
+### GitHub Required Security
+
+1. GitHub Application
+1. Cross enterprise reusable workflows
+   - Allow all actions and reusable workflows   
+1. Organization level secrets
+1. Repository environment level secrets
+1. Vending workflow permissions
+   - Read and write permissions
+   - Allow GitHub Actions to create pull requests - must be enabled at the organization level first.
 
 ### Setup Azure Entra ID Federated Authentication
 
 https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation-create-trust?pivots=identity-wif-apps-methods-azp#github-actions
 
 1. Create an Azure Entra ID [application registration](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app?tabs=certificate) or use an Azure [user assigned managed identity](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities?pivots=identity-mi-methods-azp#create-a-user-assigned-managed-identity)
+
+   | Display name                    | Application (client) ID -----        | Object ID                               | Directory (tenant) ID                      | tenant name               | Primary domain        | 
+   |---------------------------------|--------------------------------------|-----------------------------------------|--------------------------------------------|---------------------------| --------------------- |
+   | sp-ih-vendingazrescreate-prd    | 8372fd09-af5b-4e8c-9269-bcdcb4e12fbb | 4d368b35-e987-4742-9ccc-55b4cd4756f2    | a79016de-bdd0-4e47-91f4-79416ab912ad       | Intermountain Healthcare  | intermountainmail.org |
+   | sp-ih-vendingsubcreate-prd      | 615ea680-5f19-4e67-9c89-ea6cafb6b613 | 466e5c27-5e52-4e96-8038-177e0e0b3b99    | a79016de-bdd0-4e47-91f4-79416ab912ad       | Intermountain Healthcare  | intermountainmail.org |
+
    - Copy the `Client ID` and `Tenant ID` to be used when configuring GitHub Action variables.
+
 2. Add a federated credential for the new identity. This should represent the workload or GitHub Actions workflow that runs for the vending solution.
    - Select `GitHub actions deploying Azure resources` scenario
    - Provide the values for the following inputs.
@@ -116,6 +134,10 @@ If using an Azure Entra ID Application, set the name of the application and leav
 ### Setup GitHub Application
 
 Use a [GitHub Application](https://docs.github.com/en/apps/creating-github-apps/registering-a-github-app/registering-a-github-app) to configure authentication to download terraform modules stored in GitHub private repositories.
+
+   | github app name       | app id  | installed org        | org secrets/variables                                                                        |
+   | --------------------- | ------- | -------------------- | -------------------------------------------------------------------------------------------- |
+   | IH_TF_APP_MODULE_AUTH | 1144850 | Intermountain-Health | IH_TF_APP_MODULE_AUTH_PK, IH_TF_APP_MODULE_AUTH_APP_ID, IH_TF_APP_MODULE_AUTH_OWNER_ORG_NAME |
 
 1. Create application under GitHub Account or Organization (<https://github.com/settings/apps>)
    1. NOTE: When using a free plan, the app must be made public to have the option to install it in other free organizations.
@@ -172,7 +194,7 @@ Use a [GitHub Application](https://docs.github.com/en/apps/creating-github-apps/
    | TF_OWNER_ORG_NAME  	| The name of the GitHub organization that has the application installed and where the reusable workflows and modules will be consumed from. <br>This is the scope of the authentication request. 	|
    | TF_APP_ID          	| The GitHub application identifier.                                                                                                                                                              	|
 
-1. Setup GitHub repository secrets and variables
+1. Setup GitHub repository environment secrets and variables
 
    | Secret                	| Value                                                                                                                  	|
    |-----------------------	|------------------------------------------------------------------------------------------------------------------------	|
@@ -190,4 +212,4 @@ see the [documentation](.github/workflows/README.md) for the Terraform workflows
 
 ## Vending Workflow
 
-TBD
+see the [documentation](/docs/vending-solution-workflows.md) for more details on the workflow.
