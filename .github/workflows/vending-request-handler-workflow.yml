@@ -14,6 +14,11 @@ permissions:
    contents: write
    actions: write
    id-token: write
+
+env:
+  HUB_NETWORK_RESOURCE_ID: "/test"
+  DNS_SERVERS: '"10.0.0.1", "10.0.0.2"'
+
 jobs:
   request_handler:
     name: Request Handler
@@ -49,7 +54,7 @@ jobs:
             if (-Not (Test-Path -Path $requestsDirectory)) {
                 # Create the folder if it does not exist
                 New-Item -ItemType Directory -Path $requestsDirectory
-                Write-Output "Folder created at $requestsDirectory"
+                Write-Host "Folder created at $requestsDirectory"
             }
 
             # Validate request JSON against schema
@@ -69,7 +74,7 @@ jobs:
             if (-Not (Test-Path -Path $requestDirectory)) {
                 # Create the folder if it does not exist
                 New-Item -ItemType Directory -Path $requestDirectory
-                Write-Output "Folder created at $requestDirectory"
+                Write-Host "Folder created at $requestDirectory"
             }
             
             # Should this delete the builds/subscriptions directories?
@@ -86,30 +91,17 @@ jobs:
       - name: Generate YAML Files
         shell: pwsh
         run: |
-          ${{github.workspace}}/scripts/Invoke-ProcessJsonRequest.ps1 -GlobalId "${{ env.REQUEST_ID }}" -WorkloadsDirectory "${{github.workspace}}/workloads" -HubNetworkResourceId "/test" -DnsServers "10.0.0.1", "10.0.0.2"
+          ${{github.workspace}}/scripts/Invoke-ProcessJsonRequest.ps1 -GlobalId "${{ env.REQUEST_ID }}" -WorkloadsDirectory "${{github.workspace}}/workloads" -HubNetworkResourceId "${{ env.HUB_NETWORK_RESOURCE_ID }}" -DnsServers ${{ env.DNS_SERVERS }}
       - name: Generate Vending Solution Terraform variable file
         shell: pwsh
         run: |
-          $sourceDirectory = "${{ github.workspace }}"
-          $workloadsDirectory = "$sourceDirectory/workloads"
+          $workloadsDirectory = "${{ github.workspace }}/workloads"
           $buildsDirectory = "$workloadsDirectory/builds/${{ env.REQUEST_ID }}"
           $subDirectory = "$workloadsDirectory/subscriptions/${{ env.REQUEST_ID }}"
-
-          # Create directory if not found
-          if (-Not (Test-Path -Path $buildsDirectory)) {
-              # Create the folder if it does not exist
-              New-Item -ItemType Directory -Path $buildsDirectory
-              Write-Output "Folder created at $buildsDirectory"
-          }
-          if (-Not (Test-Path -Path $subDirectory)) {
-              # Create the folder if it does not exist
-              New-Item -ItemType Directory -Path $subDirectory
-              Write-Output "Folder created at $subDirectory"
-          }
           
           # Save tfvars
-          New-Item "$buildsDirectory/inputs.tfvars" -ItemType File -Value 'global_id = "workloads/builds/${{ env.REQUEST_ID }}"'
-          New-Item "$subDirectory/inputs.tfvars" -ItemType File -Value 'global_id = "workloads/subscriptions/${{ env.REQUEST_ID }}"'
+          New-Item "$buildsDirectory/inputs.tfvars" -ItemType File -Value 'global_id = "workloads/builds/${{ env.REQUEST_ID }}"' -Force
+          New-Item "$subDirectory/inputs.tfvars" -ItemType File -Value 'global_id = "workloads/subscriptions/${{ env.REQUEST_ID }}"' -Force
       - name: Create Pull Request
         id: create-pull-request
         uses: ./.github/actions/create-pull-request
