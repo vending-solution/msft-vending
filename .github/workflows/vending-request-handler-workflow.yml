@@ -8,68 +8,73 @@ on:
         required: true
         description: 'The vending JSON request to be processed.'
         type: string
-        default: '{"vending_support_team":"GIDUSR01","request_id":"auto-generated","global_id":"GID01","user_name":"GIDUSR01","contact_email_address":"requestor.owner@domain.com","aad_groups":{"owner":"xxxxx-xxxxx-xxxxx-xxxxx","reader":"zzzzz-zzzzz-zzzzz-zzzzz"},"tags":{"Application":"GID01","BusinessStream":"GID01","CostCenter":"123456"},"default_resource_groups":2,"subscriptions":[]}'
+        default: '{"request_id":"auto-generated","global_id":"wSushi","project_name":"my project wSushi","organization":"ih","workload":"Production","billing_enrollment_account":"123456","management_group_id":"msft-testing","network_watcher_resource_group_enabled":false,"subscriptions":[{"environment":"sbx","subscription_id":"","subscription_display_name":"blink","subscription_alias_name":"blink","address_space":"192.168.1.0/24","location":"westus2","peering":false,"budget":{"budget_amount":8000,"budget_occurrence":"monthly","budget_threshold":800,"budget_notification_emails":["email_1@domain.com"]}},{"environment":"dev","subscription_id":"","address_space":"192.168.2.0/24","location":"westus2","peering":false,"budget":{}}],"default_resource_groups":2,"request_custom_resource_groups":["azr-blink6-rg-01"],"tags":{"Application":"blink6","BusinessStream":"blink6","CostCenter":"123456","Customer":"blink6","UserGroup":"blink6"},"contact_email_address":"requestor.owner@domain.com","alternative_email_addresses":["team1@domain.com"],"aad_groups":{"contributor":"","PIM":"","reader":""}}'
+        #default: '{"request_id":"auto-generated","global_id":"wSushi","project_name":"my project wSushi","organization":"ih","workload":"Production","billing_enrollment_account":"123456","management_group_id":"msft-testing","network_watcher_resource_group_enabled":false,"subscriptions":[{"environment":"sbx","subscription_id":"","subscription_display_name":"blink","subscription_alias_name":"blink","address_space":"192.168.1.0/24","location":"westus2","peering":false,"budget":{"budget_amount":8000,"budget_occurrence":"monthly","budget_threshold":800,"budget_notification_emails":["email_1@domain.com","email_2@domain.com"]}},{"environment":"dev","subscription_id":"","address_space":"192.168.2.0/24","location":"westus2","peering":false,"budget":{"budget_amount":8000,"budget_occurrence":"monthly","budget_threshold":800,"budget_notification_emails":["email_1@domain.com","email_2@domain.com"]}},{"environment":"tst","subscription_id":"","address_space":"192.168.3.0/24","location":"westus2","peering":false,"budget":{"budget_amount":8000,"budget_occurrence":"monthly","budget_threshold":800,"budget_notification_emails":["email_1@domain.com","email_2@domain.com"]}},{"environment":"prd","subscription_id":"","address_space":"192.168.4.0/24","location":"westus2","peering":false,"budget":{"budget_amount":8000,"budget_occurrence":"monthly","budget_threshold":800,"budget_notification_emails":["email_1@domain.com","email_2@domain.com"]}}],"default_resource_groups":2,"request_custom_resource_groups":["azr-blink6-rg-01","azr-blink6-rg-02"],"tags":{"Application":"blink6","BusinessStream":"blink6","CostCenter":"123456","Customer":"blink6","UserGroup":"blink6"},"contact_email_address":"requestor.owner@domain.com","alternative_email_addresses":["team1@domain.com","email2@domain.com"],"aad_groups":{"contributor":"","PIM":"","reader":""}}'
 permissions:
    pull-requests: write
    contents: write
    actions: write
    id-token: write
+
+env:
+  HUB_NETWORK_RESOURCE_ID: "/test"
+  DNS_SERVERS: '"10.0.0.1", "10.0.0.2"'
+
 jobs:
   request_handler:
     name: Request Handler
     runs-on: ubuntu-latest
-    #environment: ${{ inputs.gh_environment }}
+    #environment:
     outputs:
-      request_id: ${{ steps.validate_request.outputs.request_id }}
+      global_id: ${{ steps.save_request.outputs.global_id }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-      - name: Validate and Save Request
-        id: validate_request
+      - name: Validate and Save Request        
+        run: |
+          # Validate request JSON against schema
+          $jsonRequestInput = '${{ inputs.request_json }}'
+          Write-Host "Validating request JSON against schema..."
+          $requestSchema = Get-Content "${{ github.workspace }}/schemas/vending-request-schema.json" -Raw
+          $jsonRequestInput | Test-Json -Schema $requestSchema
+        shell: pwsh
+        working-directory: ${{ github.workspace }}
+        continue-on-error: false
+      - name: Save Request
+        id: save_request
         run: |
             <#
             .SYNOPSIS
-            This PowerShell script is used to validate the vending solution JSON request against a schema and save the request to a file.
+            This PowerShell script is used to save the vending solution JSON request.
 
             .DESCRIPTION
-            Requirements
-            1. Validate the JSON request against a schema.
-            2. Save the JSON request to a file to /workloads/requests/{global_id}/request.json.
-            3. Delete the existing JSON request if it exists.            
+            Requirements            
+            1. Save the JSON request to a file to /workloads/requests/{global_id}/request.json.
+            2. Delete the existing JSON request if it exists.            
             #>
 
             $ErrorActionPreference = "Stop"
+            
             # Set variables
             $jsonRequestInput = '${{ inputs.request_json }}'
-            $sourceDirectory = "${{ github.workspace }}"
-            $workloadsDirectory = "$sourceDirectory/workloads"
-            $requestsDirectory = "$workloadsDirectory/requests"
+            $requestsDirectory = "${{ github.workspace }}/workloads/requests"
 
-            # Create requests directory if not found
-            if (-Not (Test-Path -Path $requestsDirectory)) {
-                # Create the folder if it does not exist
-                New-Item -ItemType Directory -Path $requestsDirectory
-                Write-Output "Folder created at $requestsDirectory"
-            }
-
-            # Validate request JSON against schema
-            $requestSchema = Get-Content "$sourceDirectory/schemas/vending-request-schema.json" -Raw
-            $jsonRequestInput | Test-Json -Schema $requestSchema
+            # Parse JSON & output ID 
             $jsonRequest = $jsonRequestInput | ConvertFrom-Json
-            $requestId = $jsonRequest.global_id
+            $globalId = $jsonRequest.global_id
 
-            echo "request_id=$requestId" >> $env:GITHUB_OUTPUT
-            echo "REQUEST_ID=$requestId" >> $env:GITHUB_ENV
+            echo "global_id=$globalId" >> $env:GITHUB_OUTPUT
+            echo "GLOBAL_ID=$globalId" >> $env:GITHUB_ENV
 
             # Save request to file
-            $requestDirectory = "$requestsDirectory/$requestId"
+            $requestDirectory = "$requestsDirectory/$globalId"
             $requestFile = "$requestDirectory/request.json"
 
             # Create request directory if not found
             if (-Not (Test-Path -Path $requestDirectory)) {
                 # Create the folder if it does not exist
-                New-Item -ItemType Directory -Path $requestDirectory
-                Write-Output "Folder created at $requestDirectory"
+                New-Item -ItemType Directory -Path $requestDirectory | Out-Null
+                Write-Host "Folder created at $requestDirectory"
             }
             
             # Should this delete the builds/subscriptions directories?
@@ -86,41 +91,28 @@ jobs:
       - name: Generate YAML Files
         shell: pwsh
         run: |
-          ${{github.workspace}}/scripts/Invoke-ProcessJsonRequest.ps1 -GlobalId "${{ env.REQUEST_ID }}" -WorkloadsDirectory "${{github.workspace}}/workloads" -HubNetworkResourceId "/test" -DnsServers "10.0.0.1", "10.0.0.2"
+          ${{github.workspace}}/scripts/Invoke-ProcessJsonRequest.ps1 -GlobalId "${{ env.GLOBAL_ID }}" -WorkloadsDirectory "${{github.workspace}}/workloads" -HubNetworkResourceId "${{ env.HUB_NETWORK_RESOURCE_ID }}" -DnsServers ${{ env.DNS_SERVERS }}
       - name: Generate Vending Solution Terraform variable file
         shell: pwsh
         run: |
-          $sourceDirectory = "${{ github.workspace }}"
-          $workloadsDirectory = "$sourceDirectory/workloads"
-          $buildsDirectory = "$workloadsDirectory/builds/${{ env.REQUEST_ID }}"
-          $subDirectory = "$workloadsDirectory/subscriptions/${{ env.REQUEST_ID }}"
-
-          # Create directory if not found
-          if (-Not (Test-Path -Path $buildsDirectory)) {
-              # Create the folder if it does not exist
-              New-Item -ItemType Directory -Path $buildsDirectory
-              Write-Output "Folder created at $buildsDirectory"
-          }
-          if (-Not (Test-Path -Path $subDirectory)) {
-              # Create the folder if it does not exist
-              New-Item -ItemType Directory -Path $subDirectory
-              Write-Output "Folder created at $subDirectory"
-          }
+          $workloadsDirectory = "${{ github.workspace }}/workloads"
+          $buildsDirectory = "$workloadsDirectory/builds/${{ env.GLOBAL_ID }}"
+          $subDirectory = "$workloadsDirectory/subscriptions/${{ env.GLOBAL_ID }}"
           
           # Save tfvars
-          New-Item "$buildsDirectory/inputs.tfvars" -ItemType File -Value 'global_id = "workloads/builds/${{ env.REQUEST_ID }}"'
-          New-Item "$subDirectory/inputs.tfvars" -ItemType File -Value 'global_id = "workloads/subscriptions/${{ env.REQUEST_ID }}"'
+          New-Item "$buildsDirectory/inputs.tfvars" -ItemType File -Value 'global_id = "workloads/builds/${{ env.GLOBAL_ID }}"' -Force
+          New-Item "$subDirectory/inputs.tfvars" -ItemType File -Value 'global_id = "workloads/subscriptions/${{ env.GLOBAL_ID }}"' -Force
       - name: Create Pull Request
         id: create-pull-request
         uses: ./.github/actions/create-pull-request
         with:
-          branch_name: 'features/subscription/${{ env.REQUEST_ID }}'
+          branch_name: 'features/subscription/${{ env.GLOBAL_ID }}'
           base_branch: 'main'
-          commit_message: 'Add request for ${{ env.REQUEST_ID }}'
+          commit_message: 'Add request for ${{ env.GLOBAL_ID }}'
           commit_user_name: 'githubactions'
           commit_user_email: 'githubactions@users.noreply.github.com'
-          pull_request_title: 'Vending solution request ${{ env.REQUEST_ID }}'
-          pull_request_body: 'This PR is auto-generated by the GitHub Actions Vending Request Handler Workflow.\nReview the /workloads/requests/${{ env.REQUEST_ID }}/request.json file for details.'
+          pull_request_title: 'Vending solution request ${{ env.GLOBAL_ID }}'
+          pull_request_body: 'This PR is auto-generated by the GitHub Actions Vending Request Handler Workflow.\nReview the /workloads/requests/${{ env.GLOBAL_ID }}/request.json file for details.'
           working_directory: ${{ github.workspace }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Show Pull Request Details
